@@ -1,5 +1,6 @@
 #ifndef INVERSEKINEMATICS_H
 #define INVERSEKINEMATICS_H
+#include <math.h>
 
 #define ZOFFSET 8.4
 #define FEMUR -12.6
@@ -16,7 +17,7 @@ class Inversekinematics {
         ~Inversekinematics();
         
         // methods
-        
+        void move(double, double);
         // mutators
 //        void setAlpha(double);
 //        void setBeta(double);
@@ -26,16 +27,23 @@ class Inversekinematics {
         double getAlpha();
         double getBeta();
         double getGamma();
+
+
     
-     private:    
-        // methods
-        double toDegree(double);
-        
+     private:
         // data members
         double alpha;
         double beta;
         double gamma;
+
+        // methods
+		double toDegree(double);
+		void calculateAlpha(double);
+		void calculateBeta();
+		void calculateGama();
+
     
 };
 
 #endif
+

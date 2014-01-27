@@ -13,7 +13,7 @@ Inversekinematics::Inversekinematics() {
 // accessors
 // ==================================
 double Inversekinematics::getAlpha() {
-    return alpha; 
+    return alpha;
 }
 
 double Inversekinematics::getBeta() {
@@ -31,6 +31,16 @@ double Inversekinematics::toDegree(double val) {
     return val * (ONEEIGHTY_DEGREE / PI);
 }
 
+void Inversekinematics::move(double projY, double length) {
+	calculateAlpha(length);
+}
+
+void Inversekinematics::calculateAlpha(double length) {
+	alpha = toDegree(acos(ZOFFSET / length))  + toDegree(acos((TIBIA - pow(length, 2))/(FEMUR * length)));
+//	alpha = toDegree(acos(ZOFFSET / length));
+//	alpha = toDegree(acos((TIBIA - pow(length, 2))/(FEMUR * length)));
+}
+
 // ==================================
 // mutators
 // ==================================
@@ -40,5 +50,6 @@ double Inversekinematics::toDegree(double val) {
 // destructor
 // ==================================
 Inversekinematics::~Inversekinematics(){}
+
 
 
