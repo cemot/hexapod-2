@@ -20,7 +20,7 @@
 #define LEG_B_UPPER A4
 #define LEG_B_LOWER A3
 
-#define LEG_C_HIP A8
+#define LEG_C_HIP A8 // something is not right with this pin (be sure to select Mega 2560 board).
 #define LEG_C_UPPER A7
 #define LEG_C_LOWER A6
 
@@ -37,11 +37,15 @@
 #define LEG_F_LOWER  8
 
 // direction
-#define LEFT 0
-#define RIGHT 1
-#define FORWARD 2
-#define BACKWARD 3
-#define GAIT 4
+//#define LEFT 0
+//#define RIGHT 1
+//#define FORWARD 2
+//#define BACKWARD 3
+//#define GAIT 4
+
+enum directions {
+    LEFT, RIGHT, FORWARD, BACKWARD, GAIT 
+};
 
 // macros
 

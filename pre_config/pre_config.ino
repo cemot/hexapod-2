@@ -1,6 +1,7 @@
 #include <Servo.h>
 #include "Legservos.h"
 #include "utility.c"
+#include "Inversekinematics.h"
 
 Servo sLegAHip;
 Servo sLegAUpperLimb;
@@ -123,77 +124,4 @@ void setup() {
 }
 
 void loop() {}
-
-void toggleAce(int directn) { // toggles sets of leg. on the LEFT -- UP/DOWN as per say
-     switch(directn) {
-         case 0:
-           up(sLegAUpperLimb, sLegALowerLimb);
-           up(sLegCUpperLimb, sLegCLowerLimb);
-           up(sLegCUpperLimb, sLegELowerLimb);
-           break;
-         case 1:
-           down(sLegAUpperLimb, sLegALowerLimb);
-           down(sLegCUpperLimb, sLegCLowerLimb);
-           down(sLegCUpperLimb, sLegELowerLimb);
-     }
-     
-}
-
-void toggleBDF(int directn) {
-     switch(directn) {
-        case 0:
-            up(sLegBUpperLimb, sLegBLowerLimb);
-            up(sLegDUpperLimb, sLegDLowerLimb);
-            up(sLegFUpperLimb, sLegFLowerLimb);
-            break;
-        case 1:
-            down(sLegBUpperLimb, sLegBLowerLimb);
-            down(sLegDUpperLimb, sLegDLowerLimb);
-            down(sLegFUpperLimb, sLegFLowerLimb);  
-     }
-     
-}
-
-void walk(int mode) {
-    switch(mode) {
-        case FORWARD:
-            toggleAce(0);
-            toggleBDF(1);
-            delay(500);
-            toggleAce(1);
-            toggleBDF(0);
-            delay(500);
-            break;
-        case BACKWARD:
-            break;
-        case GAIT:
-            break;
-    }
-}
-
-
-/* basic moves on each limbs */
-// moves leg up
-void up(Servo upperLimb, Servo lowerLimb) {
-    const int UPINCREMENT = 20;
-    
-    int currentUpper = upperLimb.read();
-    int currentLower = lowerLimb.read();
-    
-    upperLimb.write(currentUpper - UPINCREMENT);
-    lowerLimb.write(currentLower - UPINCREMENT);
-//    delay(1000); // @todo: delete this
-}
-
-// moves down
-void down(Servo upperLimb, Servo lowerLimb) {
-    const int UPINCREMENT = 20;
-    
-    int currentUpper = upperLimb.read();
-    int currentLower = lowerLimb.read();
-    
-    upperLimb.write(currentUpper + UPINCREMENT);
-    lowerLimb.write(currentLower + UPINCREMENT);
-//    delay(1000); // @todo: delete this
-}
 
