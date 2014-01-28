@@ -38,6 +38,7 @@ Inversekinematics ikLegD = Inversekinematics();
 Inversekinematics ikLegE = Inversekinematics();
 Inversekinematics ikLegF = Inversekinematics();
 
+double Limb::pace = 0.75; // initializes class variable (necessity)
 Limb ikLimbA = Limb(sLegAHip, sLegAUpperLimb, sLegALowerLimb);
 Limb ikLimbB = Limb(sLegBHip, sLegBUpperLimb, sLegBLowerLimb);
 Limb ikLimbC = Limb(sLegCHip, sLegCUpperLimb, sLegCLowerLimb);
@@ -143,7 +144,8 @@ void setup() {
 
 void loop() {
   
-  setSpeed(.25);
+  Limb::pace = .75;
+  
   // normal walk
   ikLimbA.walk(BACKWARD, LEFT);
   ikLimbB.walk(FORWARD, LEFT);
@@ -152,15 +154,5 @@ void loop() {
   ikLimbD.walk(FORWARD, RIGHT);
   ikLimbE.walk(BACKWARD, RIGHT);
   ikLimbF.walk(FORWARD, RIGHT);
-}
-
-void setSpeed(double spd) {
-  ikLimbA.setPace(spd);
-  ikLimbB.setPace(spd);
-  ikLimbC.setPace(spd);
-  
-  ikLimbD.setPace(spd);
-  ikLimbE.setPace(spd);
-  ikLimbF.setPace(spd);
 }
 

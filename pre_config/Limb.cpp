@@ -17,7 +17,7 @@ Limb::Limb(Servo& svHip, Servo& svUprLimb, Servo& svLwrLimb){
   ikLeg = Inversekinematics();
   
   // speed
-  pace = 0.5; 
+  pace = 0.25; 
 }
 
 void Limb::walk(directions directn, sides side) {

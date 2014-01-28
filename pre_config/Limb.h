@@ -8,6 +8,7 @@
 
 class Limb {
   public:
+    static double pace;
     // constructors for the limb class. this area assigns default values
     // to its own variables
     Limb(Servo&, Servo&, Servo&);
@@ -30,7 +31,7 @@ class Limb {
     double projY;
     double projYB;
     double length;
-    double pace;
+
     Servo mSvHip;
     Servo mSvUprLimb;
     Servo mSvLwrLimb;
