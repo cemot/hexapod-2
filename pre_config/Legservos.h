@@ -1,10 +1,3 @@
-/**
-* Note: Half stand -- 45 degrees (upperlimb) & 45 degrees (lower limb)|| hip 90 degrees
-*       Full stand -- 90 degrees (upperlimb) & 90 degrees (lower limb) || hip 90 degrees\
-*       -> HIP servo "+" paddles backward, thus hexapod goes forward
-*       -> Hip servo "-" paddles forward, thus hexapod goes backward
-*
-**/
 // defines constant angles
 #ifndef LEGSERVOS_H
 #define LEGSERVOS_H
@@ -39,14 +32,19 @@
 #define LEG_F_UPPER 9
 #define LEG_F_LOWER  8
 
+#define PIR_LEFT A13
+#define PIR_MID A14
+#define PIR_RIGHT A15
+
+#define USONIC_TRIG 30
+#define USONIC_ECHO 31
+#define IR_DIST A12
+
 
 enum directions {
     FORWARD, BACKWARD, STRAFELEFT, STRAFERIGHT
 };
-
 enum sides {LEFT, RIGHT};
-// macros
-
 
 // defines user-defined data type
 struct Leg {

@@ -23,6 +23,8 @@ Servo sLegFHip;
 Servo sLegFUpperLimb;
 Servo sLegFLowerLimb;
 
+// sensors
+
 leg *pinLegA;
 leg *pinLegB; 
 leg *pinLegC;
@@ -30,7 +32,8 @@ leg *pinLegD;
 leg *pinLegE;
 leg *pinLegF;
 
-
+// assigns inverse kinematics objects to each Leg
+// this is to automatically obtain each servo's angle
 Inversekinematics ikLegA = Inversekinematics();
 Inversekinematics ikLegB = Inversekinematics();
 Inversekinematics ikLegC = Inversekinematics();
@@ -39,6 +42,8 @@ Inversekinematics ikLegE = Inversekinematics();
 Inversekinematics ikLegF = Inversekinematics();
 
 double Limb::pace = 0.75; // initializes class variable (necessity)
+// associates Inverse Kinematic into the actual Limb's servo sets
+// this is the part where the Servo.write() function take place
 Limb ikLimbA = Limb(sLegAHip, sLegAUpperLimb, sLegALowerLimb);
 Limb ikLimbB = Limb(sLegBHip, sLegBUpperLimb, sLegBLowerLimb);
 Limb ikLimbC = Limb(sLegCHip, sLegCUpperLimb, sLegCLowerLimb);
@@ -144,15 +149,15 @@ void setup() {
 
 void loop() {
   
-  Limb::pace = .75;
-  
-  // normal walk
-  ikLimbA.walk(BACKWARD, LEFT);
-  ikLimbB.walk(FORWARD, LEFT);
-  ikLimbC.walk(BACKWARD, LEFT);
-  
-  ikLimbD.walk(FORWARD, RIGHT);
-  ikLimbE.walk(BACKWARD, RIGHT);
-  ikLimbF.walk(FORWARD, RIGHT);
+//  Limb::pace = .75;
+//  
+//  // normal walk
+//  ikLimbA.walk(BACKWARD, LEFT);
+//  ikLimbB.walk(FORWARD, LEFT);
+//  ikLimbC.walk(BACKWARD, LEFT);
+//  
+//  ikLimbD.walk(FORWARD, RIGHT);
+//  ikLimbE.walk(BACKWARD, RIGHT);
+//  ikLimbF.walk(FORWARD, RIGHT);
 }
 

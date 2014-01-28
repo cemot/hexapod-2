@@ -19,10 +19,6 @@ class Inversekinematics {
         
         // methods
         void move(double, double);
-        // mutators
-//        void setAlpha(double);
-//        void setBeta(double);
-//        void setGamma(double);
         
         // accessors
         double getUpperLimb();
