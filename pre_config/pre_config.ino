@@ -32,9 +32,15 @@ leg *pinLegF;
 // stores the current stance value of the hexapod
 int currentStanceUpperLimb = 0; 
 int currentStanceLowerLimb = 0;
+double cntr = 0.0;
+double projY = 0.0;
+double length = 0.0;
+
+Inversekinematics ikLegA = Inversekinematics();
 
 void setup() {
-  
+    projY = 5;
+    length = 10;
     // establish serial communication
     Serial.begin(9600);
     // ================================
@@ -97,7 +103,7 @@ void setup() {
     
     sLegDHip.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
     sLegDUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
-    sLegDLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
+    sLegDLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, RIGHT));
     
     // ==> Leg E
     pinLegE->hip = LEG_E_HIP;
@@ -141,9 +147,35 @@ void loop() {
         case 4:raiseLegD(); break;
         case 5:raiseLegE(); break;
         case 6:raiseLegF(); break;
+        case 7: delay(10000); break;
         default: raiseLegA();
       }      
     }
+    
+    // loops here
+    moveHexa();
+}
+
+void moveHexa() {  
+  
+  // forward & backward
+  ikLegA.move(cntr, length);
+  
+  Serial.print("Gamma: " );
+  Serial.println((int)ikLegA.getHip()); 
+  // changes the servo's angle
+  sLegDHip.write(getAbsoluteAngle((int)ikLegA.getHip(), RIGHT));
+  Serial.print(" cntr: ");
+  Serial.println(cntr); 
+  
+  cntr = cntr + 0.25;
+  if(cntr >= projY) {
+    cntr = 0;
+    Serial.println(" ===> resetting value of cntr(Gamma)");
+    Serial.println("");
+  }
+//  delayMicroseconds(500);
+//  delay(750);
 }
 
 void raiseLegA() {
@@ -181,3 +213,4 @@ void raiseLegF() {
     sLegFUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
     sLegFLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, RIGHT)); 
 }
+
