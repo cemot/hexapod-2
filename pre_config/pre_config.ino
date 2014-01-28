@@ -142,13 +142,25 @@ void setup() {
 }
 
 void loop() {
-        
+  
+  setSpeed(.25);
   // normal walk
-  ikLimbA.walk(FORWARD, LEFT);
+  ikLimbA.walk(BACKWARD, LEFT);
   ikLimbB.walk(FORWARD, LEFT);
-  ikLimbC.walk(FORWARD, LEFT);
+  ikLimbC.walk(BACKWARD, LEFT);
+  
   ikLimbD.walk(FORWARD, RIGHT);
-  ikLimbE.walk(FORWARD, RIGHT);
+  ikLimbE.walk(BACKWARD, RIGHT);
   ikLimbF.walk(FORWARD, RIGHT);
+}
+
+void setSpeed(double spd) {
+  ikLimbA.setPace(spd);
+  ikLimbB.setPace(spd);
+  ikLimbC.setPace(spd);
+  
+  ikLimbD.setPace(spd);
+  ikLimbE.setPace(spd);
+  ikLimbF.setPace(spd);
 }
 

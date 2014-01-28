@@ -16,14 +16,21 @@ class Limb {
     // of the limb
     void walk(directions, sides);
     
+    void setPace(double);
+    
+    double getPace();
+    
   private:
     void walkForward(sides);
     void walkBackward(sides);
     
     // data members/variables
     double cntr;
+    double cntrB;
     double projY;
+    double projYB;
     double length;
+    double pace;
     Servo mSvHip;
     Servo mSvUprLimb;
     Servo mSvLwrLimb;
