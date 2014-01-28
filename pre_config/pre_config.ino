@@ -2,6 +2,7 @@
 #include "Legservos.h"
 #include "utility.c"
 #include "Inversekinematics.h"
+#include "Limb.h"
 
 Servo sLegAHip;
 Servo sLegAUpperLimb;
@@ -29,18 +30,23 @@ leg *pinLegD;
 leg *pinLegE;
 leg *pinLegF;
 
-// stores the current stance value of the hexapod
-int currentStanceUpperLimb = 0; 
-int currentStanceLowerLimb = 0;
-double cntr = 0.0;
-double projY = 0.0;
-double length = 0.0;
 
 Inversekinematics ikLegA = Inversekinematics();
+Inversekinematics ikLegB = Inversekinematics();
+Inversekinematics ikLegC = Inversekinematics();
+Inversekinematics ikLegD = Inversekinematics();
+Inversekinematics ikLegE = Inversekinematics();
+Inversekinematics ikLegF = Inversekinematics();
+
+Limb ikLimbA = Limb(sLegAHip, sLegAUpperLimb, sLegALowerLimb);
+Limb ikLimbB = Limb(sLegBHip, sLegBUpperLimb, sLegBLowerLimb);
+Limb ikLimbC = Limb(sLegCHip, sLegCUpperLimb, sLegCLowerLimb);
+Limb ikLimbD = Limb(sLegDHip, sLegDUpperLimb, sLegDLowerLimb);
+Limb ikLimbE = Limb(sLegEHip, sLegEUpperLimb, sLegELowerLimb);
+Limb ikLimbF = Limb(sLegFHip, sLegFUpperLimb, sLegFLowerLimb);
 
 void setup() {
-    projY = 5;
-    length = 10;
+  
     // establish serial communication
     Serial.begin(9600);
     // ================================
@@ -103,7 +109,7 @@ void setup() {
     
     sLegDHip.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
     sLegDUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
-    sLegDLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, RIGHT));
+    sLegDLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
     
     // ==> Leg E
     pinLegE->hip = LEG_E_HIP;
@@ -136,81 +142,13 @@ void setup() {
 }
 
 void loop() {
-    // determines which leg is being oriented to which side
-    if(Serial.available()) {
-      int signal = Serial.read() - '0'; 
-      
-      switch(signal) {
-        case 1: raiseLegA(); break;
-        case 2: raiseLegB(); break;
-        case 3: raiseLegC(); break;
-        case 4:raiseLegD(); break;
-        case 5:raiseLegE(); break;
-        case 6:raiseLegF(); break;
-        case 7: delay(10000); break;
-        default: raiseLegA();
-      }      
-    }
-    
-    // loops here
-    moveHexa();
-}
-
-void moveHexa() {  
-  
-  // forward & backward
-  ikLegA.move(cntr, length);
-  
-  Serial.print("Gamma: " );
-  Serial.println((int)ikLegA.getHip()); 
-  // changes the servo's angle
-  sLegDHip.write(getAbsoluteAngle((int)ikLegA.getHip(), RIGHT));
-  Serial.print(" cntr: ");
-  Serial.println(cntr); 
-  
-  cntr = cntr + 0.25;
-  if(cntr >= projY) {
-    cntr = 0;
-    Serial.println(" ===> resetting value of cntr(Gamma)");
-    Serial.println("");
-  }
-//  delayMicroseconds(500);
-//  delay(750);
-}
-
-void raiseLegA() {
-    sLegAHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
-    sLegAUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
-    sLegALowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, LEFT)); 
-}
-
-void raiseLegB() {
-    sLegBHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
-    sLegBUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
-    sLegBLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, LEFT)); 
-}
-
-void raiseLegC() {
-    sLegCHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
-    sLegCUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
-    sLegCLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, LEFT)); 
-}
-
-void raiseLegD() {
-    sLegDHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
-    sLegDUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
-    sLegDLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, RIGHT)); 
-}
-
-void raiseLegE() {
-    sLegEHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
-    sLegEUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
-    sLegELowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, RIGHT)); 
-}
-
-void raiseLegF() {
-    sLegFHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
-    sLegFUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
-    sLegFLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, RIGHT)); 
+        
+  // normal walk
+  ikLimbA.walk(FORWARD, LEFT);
+  ikLimbB.walk(FORWARD, LEFT);
+  ikLimbC.walk(FORWARD, LEFT);
+  ikLimbD.walk(FORWARD, RIGHT);
+  ikLimbE.walk(FORWARD, RIGHT);
+  ikLimbF.walk(FORWARD, RIGHT);
 }
 

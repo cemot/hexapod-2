@@ -6,6 +6,9 @@
 *
 **/
 // defines constant angles
+#ifndef LEGSERVOS_H
+#define LEGSERVOS_H
+
 #define NINETY_DEGREE 90
 #define FORTYFIVE_DEGREE 45
 #define ONETHREEFIVE_DEGREE 100
@@ -36,17 +39,12 @@
 #define LEG_F_UPPER 9
 #define LEG_F_LOWER  8
 
-// direction
-//#define LEFT 0
-//#define RIGHT 1
-//#define FORWARD 2
-//#define BACKWARD 3
-//#define GAIT 4
 
 enum directions {
-    LEFT, RIGHT, FORWARD, BACKWARD, GAIT 
+    FORWARD, BACKWARD, STRAFELEFT, STRAFERIGHT
 };
 
+enum sides {LEFT, RIGHT};
 // macros
 
 
@@ -64,3 +62,5 @@ void assignPins();
 void attachServos();
 int getAbsoluteAngle(int, int);
 void walk(int);
+
+#endif
