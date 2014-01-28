@@ -34,9 +34,11 @@ int currentStanceUpperLimb = 0;
 int currentStanceLowerLimb = 0;
 
 void setup() {
-        
+  
+    // establish serial communication
+    Serial.begin(9600);
     // ================================
-    //  ACE - LEFT
+    //  ABC - LEFT
     // ================================
     //==> Leg A
     pinLegA->hip = LEG_A_HIP;
@@ -51,6 +53,19 @@ void setup() {
     sLegAUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
     sLegALowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
     
+    // LegB
+    pinLegB->hip = LEG_B_HIP;
+    pinLegB->upperLimb = LEG_B_UPPER;
+    pinLegB->lowerLimb = LEG_B_LOWER;
+    
+    sLegBHip.attach(pinLegB->hip);
+    sLegBUpperLimb.attach(pinLegB->upperLimb);
+    sLegBLowerLimb.attach(pinLegB->lowerLimb);
+    
+    sLegBHip.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
+    sLegBUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
+    sLegBLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
+    
     //==> Leg C
     pinLegC->hip = LEG_C_HIP;
     pinLegC->upperLimb = LEG_C_UPPER;
@@ -64,34 +79,12 @@ void setup() {
     sLegCUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
     sLegCLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
     
-    // ==> Leg E
-    pinLegE->hip = LEG_E_HIP;
-    pinLegE->upperLimb = LEG_E_UPPER;
-    pinLegE->lowerLimb = LEG_E_LOWER;
     
-    sLegEHip.attach(pinLegE->hip);
-    sLegEUpperLimb.attach(pinLegE->upperLimb);
-    sLegELowerLimb.attach(pinLegE->lowerLimb);
-    
-    sLegEHip.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
-    sLegEUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
-    sLegELowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
     
     // ================================
-    //  BDF - RIGHT
+    //  DEF - RIGHT
     // ================================
-    // LegB
-    pinLegB->hip = LEG_B_HIP;
-    pinLegB->upperLimb = LEG_B_UPPER;
-    pinLegB->lowerLimb = LEG_B_LOWER;
     
-    sLegBHip.attach(pinLegB->hip);
-    sLegBUpperLimb.attach(pinLegB->upperLimb);
-    sLegBLowerLimb.attach(pinLegB->lowerLimb);
-    
-    sLegBHip.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
-    sLegBUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
-    sLegBLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
 
     // ==> Leg D
     pinLegD->hip = LEG_D_HIP;
@@ -105,6 +98,19 @@ void setup() {
     sLegDHip.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
     sLegDUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
     sLegDLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
+    
+    // ==> Leg E
+    pinLegE->hip = LEG_E_HIP;
+    pinLegE->upperLimb = LEG_E_UPPER;
+    pinLegE->lowerLimb = LEG_E_LOWER;
+    
+    sLegEHip.attach(pinLegE->hip);
+    sLegEUpperLimb.attach(pinLegE->upperLimb);
+    sLegELowerLimb.attach(pinLegE->lowerLimb);
+    
+    sLegEHip.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
+    sLegEUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
+    sLegELowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
     
     // ==> Leg F
     pinLegF->hip = LEG_F_HIP;
@@ -123,5 +129,55 @@ void setup() {
     
 }
 
-void loop() {}
+void loop() {
+    // determines which leg is being oriented to which side
+    if(Serial.available()) {
+      int signal = Serial.read() - '0'; 
+      
+      switch(signal) {
+        case 1: raiseLegA(); break;
+        case 2: raiseLegB(); break;
+        case 3: raiseLegC(); break;
+        case 4:raiseLegD(); break;
+        case 5:raiseLegE(); break;
+        case 6:raiseLegF(); break;
+        default: raiseLegA();
+      }      
+    }
+}
 
+void raiseLegA() {
+    sLegAHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
+    sLegAUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
+    sLegALowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, LEFT)); 
+}
+
+void raiseLegB() {
+    sLegBHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
+    sLegBUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
+    sLegBLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, LEFT)); 
+}
+
+void raiseLegC() {
+    sLegCHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
+    sLegCUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
+    sLegCLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, LEFT)); 
+}
+
+void raiseLegD() {
+    sLegDHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
+    sLegDUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
+    sLegDLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, RIGHT)); 
+}
+
+void raiseLegE() {
+    sLegEHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
+    sLegEUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
+    sLegELowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, RIGHT)); 
+}
+
+void raiseLegF() {
+    sLegFHip.write(getAbsoluteAngle((NINETY_DEGREE), LEFT));
+    sLegFUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
+    sLegFLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE + FORTYFIVE_DEGREE, RIGHT)); 
+}
