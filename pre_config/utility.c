@@ -16,4 +16,3 @@ int getAbsoluteAngle(int angle, int side) {
           return angle;
   }
 }
-

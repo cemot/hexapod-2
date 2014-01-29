@@ -16,6 +16,10 @@ Limb::Limb(Servo& svHip, Servo& svUprLimb, Servo& svLwrLimb){
   // instantiates the Inverser Kinematics class
   ikLeg = Inversekinematics();
   
+  // sets the orietation priority of the leg
+  revDirectionFrontPrior = revFORWARD;
+  revDirectionBackPrior = revBACKWARD;
+  
   // speed
   pace = 0.25; 
 }
@@ -42,12 +46,19 @@ void Limb::walkForward(sides side) {
   (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), LEFT));
   Serial.print(" cntr: ");
   Serial.println(cntr); 
-  
-  cntr = cntr + pace;
-  if(cntr >= projY) {
-    cntr = 0;
+  Serial.print("Gamma: ");
+  Serial.print((int)ikLeg.getHip());
+  Serial.print(" Direction: ");
+  Serial.println(revDirectionFrontPrior);
+//  delay(500);
+  if(revDirectionFrontPrior == revFORWARD) {
+    cntr = cntr + pace;
+    if(cntr > projY)
+      revDirectionFrontPrior = revBACKWARD;
+  } else {
+    cntr = cntr - pace;
+    if(cntr < 0) revDirectionFrontPrior = revFORWARD;
   }
-
 }
 
 void Limb::walkBackward(sides side){
@@ -60,14 +71,20 @@ void Limb::walkBackward(sides side){
   Serial.print(" cntrB: ");
   Serial.println(cntrB); 
   Serial.print("Gamma: ");
-  Serial.println((int)ikLeg.getHip());
+  Serial.print((int)ikLeg.getHip());
+  Serial.print(" Direction: ");
+  Serial.println(revDirectionBackPrior);
   
-  cntrB = cntrB - pace;
-  if(cntrB <= projYB) {
-    cntrB = 0;
-    Serial.print(" =================> resets to 0");
+  if(revDirectionBackPrior == revBACKWARD) {
+    cntrB = cntrB - pace;
+    if(cntrB < projYB)
+      revDirectionBackPrior = revFORWARD;
+  } else {
+    cntrB = cntrB + pace;
+    if(cntrB > 0) 
+      revDirectionBackPrior = revBACKWARD;
   }
-
+  
 }
 
 void Limb::setPace(double newVal) {

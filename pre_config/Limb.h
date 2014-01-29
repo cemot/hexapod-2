@@ -31,11 +31,13 @@ class Limb {
     double projY;
     double projYB;
     double length;
-
+    revolution revDirectionFrontPrior;
+    revolution revDirectionBackPrior;
+    
     Servo mSvHip;
     Servo mSvUprLimb;
     Servo mSvLwrLimb;
     Inversekinematics ikLeg;
 };
 
-
+  

@@ -40,11 +40,11 @@
 #define USONIC_ECHO 31
 #define IR_DIST A12
 
-
 enum directions {
     FORWARD, BACKWARD, STRAFELEFT, STRAFERIGHT
 };
 enum sides {LEFT, RIGHT};
+enum revolution{revFORWARD, revBACKWARD};
 
 // defines user-defined data type
 struct Leg {
@@ -59,6 +59,5 @@ typedef struct Leg leg;
 void assignPins();
 void attachServos();
 int getAbsoluteAngle(int, int);
-void walk(int);
 
 #endif

@@ -149,15 +149,16 @@ void setup() {
 
 void loop() {
   
-//  Limb::pace = .75;
+  Limb::pace = .25;
 //  
 //  // normal walk
-//  ikLimbA.walk(BACKWARD, LEFT);
+//  ikLimbA.walk(FORWARD, LEFT);
 //  ikLimbB.walk(FORWARD, LEFT);
-//  ikLimbC.walk(BACKWARD, LEFT);
+//  ikLimbC.walk(FORWARD, LEFT);
 //  
-//  ikLimbD.walk(FORWARD, RIGHT);
+  ikLimbD.walk(BACKWARD, RIGHT);
 //  ikLimbE.walk(BACKWARD, RIGHT);
+//  ikLimbE.walk(FORWARD, RIGHT);
 //  ikLimbF.walk(FORWARD, RIGHT);
 }
 
