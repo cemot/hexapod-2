@@ -149,16 +149,28 @@ void setup() {
 
 void loop() {
   
-  Limb::pace = .25;
-//  
-//  // normal walk
-//  ikLimbA.walk(FORWARD, LEFT);
+  
+  // sensors section
+    // ultrasonic sensor
+      // rotate 180 degrees with time interval
+      // PIR algo here
+      // IR_Distance algo here
+  
+  
+  // gait section
+  
+    // if exists collision then strafe (left or right)
+    // if exists collision and collision distance is very close then stop or walk backwards
+        // if gait sidewards is availbe then do sidewards
+  Limb::pace = .75;
+  
+  // normal walk
+//  ikLimbA.walk(BACKWARD, LEFT);
 //  ikLimbB.walk(FORWARD, LEFT);
-//  ikLimbC.walk(FORWARD, LEFT);
-//  
-  ikLimbD.walk(BACKWARD, RIGHT);
+  ikLimbC.walk(BACKWARD, LEFT);
+  
+  ikLimbD.walk(FORWARD, RIGHT);
 //  ikLimbE.walk(BACKWARD, RIGHT);
-//  ikLimbE.walk(FORWARD, RIGHT);
 //  ikLimbF.walk(FORWARD, RIGHT);
 }
 
