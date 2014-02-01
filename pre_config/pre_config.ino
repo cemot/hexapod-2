@@ -1,3 +1,6 @@
+#include <NewPing.h>
+#include <Thread.h>
+#include <ThreadController.h>
 #include <Servo.h>
 #include "Legservos.h"
 #include "utility.c"
@@ -50,6 +53,26 @@ Limb ikLimbC = Limb(sLegCHip, sLegCUpperLimb, sLegCLowerLimb);
 Limb ikLimbD = Limb(sLegDHip, sLegDUpperLimb, sLegDLowerLimb);
 Limb ikLimbE = Limb(sLegEHip, sLegEUpperLimb, sLegELowerLimb);
 Limb ikLimbF = Limb(sLegFHip, sLegFUpperLimb, sLegFLowerLimb);
+
+// ThreadController that will controll all threads
+ThreadController controll = ThreadController();  
+
+//My Thread (as a pointer)
+Thread* threadUSonicSensor = new Thread();
+
+// newping
+NewPing sonar(USONIC_TRIG, USONIC_ECHO, MAX_DISTANCE);
+// temp constant
+int pathDistance = 0;
+
+void scanPath() {
+//    delay(50);
+    int uS = sonar.ping();
+    pathDistance = uS / US_ROUNDTRIP_IN;
+//    Serial.print("Ping: ");
+//    Serial.print(uS / US_ROUNDTRIP_CM);
+//    Serial.println("cm");
+}
 
 void buildLegs() {
   // ================================
@@ -147,6 +170,11 @@ void setup() {
     // establish serial communication
     Serial.begin(9600);
     
+    threadUSonicSensor->onRun(scanPath);
+    threadUSonicSensor->setInterval(500);
+    
+    controll.add(threadUSonicSensor);
+    
     // assigns three servos each leg
     // and sets initial stance of the
     // hexapod. 90-degrees on three servos each leg
@@ -177,18 +205,19 @@ void loop() {
 // @kenn: algo ends here
 //=======================================================
 
-
+  // thread controller
+  controll.run();
   
 //=======================================================
 // @MISO: You can edit this section only. This section
 //            temporary due to testing phase.
 //=======================================================
-  Limb::pace = .25; // adjust this to control the speed of gait. (0.025 - .5)
+  Limb::pace = .15; // adjust this to control the speed of gait. (0.025 - .5)
   
   
   // note: Please try run only 1, 2, 3... or 6 legs to by commenting out each line
   // that correspond to each leg, for example this line: ikLimbA.walk(BACKWARD, LEFT);
-  
+  if(pathDistance >= 8 ) {
   // normal walk (tripod gait)
   ikLimbA.walk(BACKWARD, LEFT);
   ikLimbB.walk(FORWARD, LEFT);
@@ -197,6 +226,8 @@ void loop() {
   ikLimbD.walk(FORWARD, RIGHT);
   ikLimbE.walk(BACKWARD, RIGHT);
   ikLimbF.walk(FORWARD, RIGHT);
+  
+  }
 
 //=======================================================
 // @MISO: Please do not edit code beyond this section.

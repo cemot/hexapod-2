@@ -42,6 +42,7 @@
 #define USONIC_TRIG 30
 #define USONIC_ECHO 31
 #define IR_DIST A12
+#define MAX_DISTANCE 200 // constant variable for the ultrasonic sensor || pinging purpsoses
 
 enum directions {
     FORWARD, BACKWARD, STRAFELEFT, STRAFERIGHT
