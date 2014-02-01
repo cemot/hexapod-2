@@ -51,11 +51,8 @@ Limb ikLimbD = Limb(sLegDHip, sLegDUpperLimb, sLegDLowerLimb);
 Limb ikLimbE = Limb(sLegEHip, sLegEUpperLimb, sLegELowerLimb);
 Limb ikLimbF = Limb(sLegFHip, sLegFUpperLimb, sLegFLowerLimb);
 
-void setup() {
-  
-    // establish serial communication
-    Serial.begin(9600);
-    // ================================
+void buildLegs() {
+  // ================================
     //  ABC - LEFT
     // ================================
     //==> Leg A
@@ -142,14 +139,26 @@ void setup() {
     
     sLegFHip.write(getAbsoluteAngle((NINETY_DEGREE), RIGHT));
     sLegFUpperLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
-    sLegFLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT));
+    sLegFLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT)); 
+}
+
+void setup() {
+  
+    // establish serial communication
+    Serial.begin(9600);
     
-    
+    // assigns three servos each leg
+    // and sets initial stance of the
+    // hexapod. 90-degrees on three servos each leg
+    buildLegs();
+
 }
 
 void loop() {
   
-  
+//=======================================================
+// @kenn: defines algo here first
+//=======================================================
   // sensors section
     // ultrasonic sensor
       // rotate 180 degrees with time interval
@@ -161,10 +170,26 @@ void loop() {
   
     // if exists collision then strafe (left or right)
     // if exists collision and collision distance is very close then stop or walk backwards
-        // if gait sidewards is availbe then do sidewards
-  Limb::pace = .75;
+        // if gait sidewards is availbe then do sidewards        
+  // ................................... codes to be finalized here soon. --by: kenn
   
-  // normal walk
+//=======================================================
+// @kenn: algo ends here
+//=======================================================
+
+
+  
+//=======================================================
+// @MISO: You can edit this section only. This section
+//            temporary due to testing phase.
+//=======================================================
+  Limb::pace = .75; // adjust this to control the speed of gait. (0.125 - 2.000)
+  
+  
+  // note: Please try run only 1, 2, 3... or 6 legs to by commenting out each line
+  // that correspond to each leg, for example this line: ikLimbA.walk(BACKWARD, LEFT);
+  
+  // normal walk (tripod gait)
 //  ikLimbA.walk(BACKWARD, LEFT);
 //  ikLimbB.walk(FORWARD, LEFT);
   ikLimbC.walk(BACKWARD, LEFT);
@@ -172,5 +197,12 @@ void loop() {
   ikLimbD.walk(FORWARD, RIGHT);
 //  ikLimbE.walk(BACKWARD, RIGHT);
 //  ikLimbF.walk(FORWARD, RIGHT);
+
+//=======================================================
+// @MISO: Please do not edit code beyond this section.
+//        if there are still code after this section
+//=======================================================
+
+
 }
 
