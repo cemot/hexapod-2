@@ -162,15 +162,15 @@ void loop() {
     // if exists collision then strafe (left or right)
     // if exists collision and collision distance is very clos  e then stop or walk backwards
         // if gait sidewards is availbe then do sidewards
-  Limb::pace = .15;
+  Limb::pace = .75;
   
   // normal walk
-  ikLimbA.walk(BACKWARD, LEFT);
-  ikLimbB.walk(FORWARD, LEFT);
+//  ikLimbA.walk(BACKWARD, LEFT);
+//  ikLimbB.walk(FORWARD, LEFT);
   ikLimbC.walk(BACKWARD, LEFT);
   
   ikLimbD.walk(FORWARD, RIGHT);
-  ikLimbE.walk(BACKWARD, RIGHT);
-  ikLimbF.walk(FORWARD, RIGHT);
+//  ikLimbE.walk(BACKWARD, RIGHT);
+//  ikLimbF.walk(FORWARD, RIGHT);
 }
 

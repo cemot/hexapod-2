@@ -9,15 +9,14 @@ float voltage = out * (5.0 / 1023.0);
 //Vout conversion 
 float distance = (((1/(voltage*voltage))*0.003))* 100; 
 //Vout to inches 
-//Serial.print(distance); 
-Serial.println(out); 
-//Serial.print(" "); 
-//Serial.print("inches "); 
-//float distance1 = distance*2.54; 
+Serial.print(distance); 
+Serial.print(" "); 
+Serial.print("inches "); 
+float distance1 = distance*2.54; 
 // Cm conversion 
-//Serial.print(distance1); 
-//Serial.print(" ");
-//Serial.println("centimeter");
+Serial.print(distance1); 
+Serial.print(" ");
+Serial.println("centimeter");
 delay(250);
 }
 
