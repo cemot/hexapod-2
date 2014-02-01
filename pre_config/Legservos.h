@@ -39,7 +39,6 @@
 #define USONIC_TRIG 30
 #define USONIC_ECHO 31
 #define IR_DIST A12
-#define USONIC_SERVO 11
 
 enum directions {
     FORWARD, BACKWARD, STRAFELEFT, STRAFERIGHT
