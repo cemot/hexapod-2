@@ -2,8 +2,8 @@
 // This sketch will output distance info via the UART port
 // port assignment 
 // change as may be necessary const 
-int trigger=31; 
-const int echo=30;
+int trigger=30; 
+const int echo=31;
 float distance;
 void setup(){
  Serial.begin(9600); 
@@ -21,7 +21,7 @@ void loop(){
  digitalWrite(trigger,LOW); 
 // Acquire and convert to mtrs 
  distance=pulseIn(echo,HIGH); 
- distance=distance*0.0001657; 
+// distance=distance*0.0001657; @todo: correct this equation
 // send result to UART 
-Serial.println(distance); delay(50); 
+Serial.println(distance); delay(500); 
 }

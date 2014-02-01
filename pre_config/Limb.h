@@ -31,7 +31,8 @@ class Limb {
     double projY;
     double projYB;
     double length;
-    double raiseLegOffset;
+    double raiseLegOffsetForward;
+    double raiseLegOffsetBackward;
     revolution revDirectionFrontPrior;
     revolution revDirectionBackPrior;
     
