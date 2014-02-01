@@ -7,7 +7,8 @@ Limb::Limb(Servo& svHip, Servo& svUprLimb, Servo& svLwrLimb){
   projY = 5; // Note: this is the of the limb's angle (forward)
   projYB = -5; // Note: this is the of the limb's angle (backward)
 
-  length = 14;
+  // the distance of step each leg
+  length = 11;
   
   mSvHip = svHip;
   mSvUprLimb = svUprLimb;
@@ -19,7 +20,8 @@ Limb::Limb(Servo& svHip, Servo& svUprLimb, Servo& svLwrLimb){
   // sets the orietation priority of the leg
   revDirectionFrontPrior = revFORWARD;
   revDirectionBackPrior = revBACKWARD;
-  raiseLegOffset = 0.0;
+  raiseLegOffsetForward = 0.0;
+  raiseLegOffsetBackward = 0.0;
   
   // speed
   pace = 0.25; 
@@ -43,13 +45,9 @@ void Limb::walkForward(sides side) {
   ikLeg.move(cntr, length);
   
   (side == RIGHT) ? mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), RIGHT)) : mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), LEFT));
-  (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffset, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffset, LEFT));
+  (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetForward, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetForward, LEFT));
   (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), LEFT));
-  Serial.print(" cntr: ");
-  Serial.println(cntr); 
-  Serial.print("Gamma: ");
-  Serial.print((int)ikLeg.getHip());
-  Serial.print(" Direction: ");
+
   Serial.println(revDirectionFrontPrior);
 //  delay(500);
   if(revDirectionFrontPrior == revFORWARD) {
@@ -57,13 +55,13 @@ void Limb::walkForward(sides side) {
     if(cntr > projY)
       revDirectionFrontPrior = revBACKWARD;
     // raise leg    
-    raiseLegOffset = 15;
+    raiseLegOffsetForward = RAISELEGOFFSET_Y;
   } else {
     cntr = cntr - pace;
     if(cntr < 0) revDirectionFrontPrior = revFORWARD;
     
     // down leg
-    raiseLegOffset = 0.0;
+    raiseLegOffsetForward = 0.0;
   }
 }
 
@@ -72,25 +70,20 @@ void Limb::walkBackward(sides side){
   ikLeg.move(cntrB, length);
 
   (side == RIGHT) ? mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), RIGHT)) : mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), LEFT));
-  (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() + raiseLegOffset, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() + raiseLegOffset, LEFT));
+  (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetBackward, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetBackward, LEFT));
   (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), LEFT));
-  Serial.print(" cntrB: ");
-  Serial.println(cntrB); 
-  Serial.print("Gamma: ");
-  Serial.print((int)ikLeg.getHip());
-  Serial.print(" Direction: ");
-  Serial.println(revDirectionBackPrior);
+
   
   if(revDirectionBackPrior == revBACKWARD) {
     cntrB = cntrB - pace;
     if(cntrB < projYB)
       revDirectionBackPrior = revFORWARD;     
-    raiseLegOffset = 15;
+    raiseLegOffsetBackward = 0;
   } else {
     cntrB = cntrB + pace;
     if(cntrB > 0) 
       revDirectionBackPrior = revBACKWARD;
-    raiseLegOffset = 0;
+    raiseLegOffsetBackward = RAISELEGOFFSET_Y;
   }
   
 }

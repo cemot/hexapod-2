@@ -7,6 +7,9 @@
 #define ONETHREEFIVE_DEGREE 100
 #define ONEEIGHTY_DEGREE 180
 
+// defines the height of the leg should be raised upon
+#define RAISELEGOFFSET_Y 20
+
 // defines pins for each leg and leg partition
 #define LEG_A_HIP A2
 #define LEG_A_UPPER A1

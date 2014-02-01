@@ -183,20 +183,20 @@ void loop() {
 // @MISO: You can edit this section only. This section
 //            temporary due to testing phase.
 //=======================================================
-  Limb::pace = .75; // adjust this to control the speed of gait. (0.125 - 2.000)
+  Limb::pace = .25; // adjust this to control the speed of gait. (0.025 - .5)
   
   
   // note: Please try run only 1, 2, 3... or 6 legs to by commenting out each line
   // that correspond to each leg, for example this line: ikLimbA.walk(BACKWARD, LEFT);
   
   // normal walk (tripod gait)
-//  ikLimbA.walk(BACKWARD, LEFT);
-//  ikLimbB.walk(FORWARD, LEFT);
+  ikLimbA.walk(BACKWARD, LEFT);
+  ikLimbB.walk(FORWARD, LEFT);
   ikLimbC.walk(BACKWARD, LEFT);
   
   ikLimbD.walk(FORWARD, RIGHT);
-//  ikLimbE.walk(BACKWARD, RIGHT);
-//  ikLimbF.walk(FORWARD, RIGHT);
+  ikLimbE.walk(BACKWARD, RIGHT);
+  ikLimbF.walk(FORWARD, RIGHT);
 
 //=======================================================
 // @MISO: Please do not edit code beyond this section.
