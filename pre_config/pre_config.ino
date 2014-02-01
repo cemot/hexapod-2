@@ -160,7 +160,7 @@ void loop() {
   // gait section
   
     // if exists collision then strafe (left or right)
-    // if exists collision and collision distance is very close then stop or walk backwards
+    // if exists collision and collision distance is very clos  e then stop or walk backwards
         // if gait sidewards is availbe then do sidewards
   Limb::pace = .15;
   
