@@ -25,6 +25,7 @@ Servo sLegELowerLimb;
 Servo sLegFHip;
 Servo sLegFUpperLimb;
 Servo sLegFLowerLimb;
+Servo sUltraSonic;
 
 // sensors
 
@@ -57,8 +58,10 @@ Limb ikLimbF = Limb(sLegFHip, sLegFUpperLimb, sLegFLowerLimb);
 // ThreadController that will controll all threads
 ThreadController controll = ThreadController();  
 
-//My Thread (as a pointer)
+// thread for ultrasonic sensor's reading
 Thread* threadUSonicSensor = new Thread();
+
+Thread* threadUSonicServo = new Thread();
 
 // newping
 NewPing sonar(USONIC_TRIG, USONIC_ECHO, MAX_DISTANCE);
@@ -72,6 +75,26 @@ void scanPath() {
 //    Serial.print("Ping: ");
 //    Serial.print(uS / US_ROUNDTRIP_CM);
 //    Serial.println("cm");
+}
+
+// @todo: todo
+int incRadarAngle = 5;
+
+void doRadar() {
+ //ULTRASONICSERVO
+ int curAngle = sUltraSonic.read();
+ curAngle = curAngle + 5;
+ 
+ sUltraSonic.write(curAngle);
+ 
+ 
+ if(curAngle >= 100)
+    sUltraSonic.write(0); 
+//   sUltraSonic.write(curAngle - ULTRASONICSERVO);
+// else if (curAngle <= 10)
+//   sUltraSonic.write(curAngle + ULTRASONICSERVO);
+ 
+ 
 }
 
 void buildLegs() {
@@ -172,8 +195,14 @@ void setup() {
     
     threadUSonicSensor->onRun(scanPath);
     threadUSonicSensor->setInterval(500);
+    threadUSonicServo->onRun(doRadar);
+    threadUSonicServo->setInterval(50);
     
     controll.add(threadUSonicSensor);
+    controll.add(threadUSonicServo);
+    
+    // @todo: temp. do oop on this
+    sUltraSonic.attach(ULTRASONICSERVO);
     
     // assigns three servos each leg
     // and sets initial stance of the
@@ -212,12 +241,12 @@ void loop() {
 // @MISO: You can edit this section only. This section
 //            temporary due to testing phase.
 //=======================================================
-  Limb::pace = .15; // adjust this to control the speed of gait. (0.025 - .5)
+  Limb::pace = .20; // adjust this to control the speed of gait. (0.025 - .5)
   
   
   // note: Please try run only 1, 2, 3... or 6 legs to by commenting out each line
   // that correspond to each leg, for example this line: ikLimbA.walk(BACKWARD, LEFT);
-  if(pathDistance >= 8 ) {
+  if(pathDistance >= 15 ) {
   // normal walk (tripod gait)
   ikLimbA.walk(BACKWARD, LEFT);
   ikLimbB.walk(FORWARD, LEFT);
