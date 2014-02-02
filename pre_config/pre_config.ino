@@ -29,8 +29,6 @@ Servo sLegFUpperLimb;
 Servo sLegFLowerLimb;
 Servo sUltraSonic;
 
-// sensors
-
 leg *pinLegA;
 leg *pinLegB; 
 leg *pinLegC;
@@ -68,21 +66,28 @@ ThreadController controll = ThreadController();
 
 // thread for ultrasonic sensor's reading
 Thread* threadUSonicSensor = new Thread();
-
 Thread* threadUSonicServo = new Thread();
+Thread* threadDistanceIR = new Thread();
 
 // newping
 NewPing sonar(USONIC_TRIG, USONIC_ECHO, MAX_DISTANCE);
 // temp constant
 int pathDistance = 0;
-
+int cliffHeight = 0;
+boolean _boo_autonomous_mode = true;
 
 // this scan the path of hexapod
 void scanPath() {
-
     int uS = sonar.ping();
     pathDistance = uS / US_ROUNDTRIP_IN;
 }
+
+void scanCliffHeight() {
+  cliffHeight = analogRead(IR_DIST);
+  cliffHeight = map(cliffHeight, 0, 1023, 1023, 0);  
+
+}
+
 
 // @todo: todo
 int incRadarAngle = 5;
@@ -189,19 +194,25 @@ void buildLegs() {
     sLegFLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT)); 
 }
 
-int gaitType = 0;
+int userInput = 0;
 void setup() {
   
     // establish serial communication
     Serial.begin(9600);
     
+    // Ultrasonic sensor
     threadUSonicSensor->onRun(scanPath);
     threadUSonicSensor->setInterval(500);
+    // servo Ultrasonic
     threadUSonicServo->onRun(doRadar);
     threadUSonicServo->setInterval(50);
+    // distance IR
+    threadDistanceIR->onRun(scanCliffHeight);
+    threadDistanceIR->setInterval(500);
     
     controll.add(threadUSonicSensor);
     controll.add(threadUSonicServo);
+    controll.add(threadDistanceIR);
     
     // @todo: temp. do oop on this
     sUltraSonic.attach(ULTRASONICSERVO);
@@ -214,12 +225,33 @@ void setup() {
 }
 
 void loop() {
+  // Thread controller. This runs all threads
+  controll.run();
+
+  Limb::pace = .15; // adjust this to control the speed of gait. (0.025 - .5)
   
-//=======================================================
-// @kenn: defines algo here first
-//=======================================================
-  // sensors section
+  // wait for serial communication
+  if(Serial.available()) {
+    userInput = Serial.read() - '0';
+    
+    switch(userInput) {
+      case 0:
+        _boo_autonomous_mode = false;
+        break;
+      case 1:
+        _boo_autonomous_mode = true;
+         break;  
+    }
+  }
+  
+  if(_boo_autonomous_mode) {
+    // sensors section
     // ultrasonic sensor
+    if(pathDistance >= 15 || cliffHeight >= DANGER_VAL_DISTANCE_IR){ // more than 15 inches
+      gaitHexapod.walk(FORWARD);
+    } else if (pathDistance < 15) {
+      gaitHexapod.strafe(LEFT);
+    }
       // rotate 180 degrees with time interval
       // PIR algo here
       // IR_Distance algo here
@@ -229,39 +261,25 @@ void loop() {
   
     // if exists collision then strafe (left or right)
     // if exists collision and collision distance is very close then stop or walk backwards
-        // if gait sidewards is availbe then do sidewards        
-  // ................................... codes to be finalized here soon. --by: kenn
-
-  // Thread controller. This runs all threads
-  controll.run();
-
-  Limb::pace = .15; // adjust this to control the speed of gait. (0.025 - .5)
-  
-  if(Serial.available()) {
-   gaitType = Serial.read() - '0';
-//    Serial.print("Bluetooth data: ");
-//    Serial.println(gaitType); 
-    
-    // decides the hexapod what kind of gait it should perform
-//    if(pathDistance >= 15 )
-     switch(gaitType) {
-      case 0:
+        // if gait sidewards is availbe then do sidewards          
+  } else {
+    switch(userInput) {
+      case 2:
          gaitHexapod.walk(FORWARD);
-       break;       
-//    else if(pathDistance < 15)
-      case 1:
+         break;       
+      case 3:
         gaitHexapod.walk(BACKWARD);
         break;
-      case 2:
+      case 4:
         gaitHexapod.strafe(LEFT);
         break;
-      case 3:
+      case 5:
         gaitHexapod.strafe(RIGHT);
         break;
-      case 4:
+      case 6:
         gaitHexapod.halt();
      }
   }
-  
+   
 }
 

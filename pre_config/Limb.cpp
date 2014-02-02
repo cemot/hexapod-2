@@ -51,7 +51,7 @@ void Limb::walkForward(sides side, directions hxpDirections) {
   (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), LEFT));
   
 
-  Serial.println(revDirectionFrontPrior);
+//  Serial.println(revDirectionFrontPrior);
 //  delay(500);
   if(revDirectionFrontPrior == revFORWARD) {
     cntr = cntr + pace;
