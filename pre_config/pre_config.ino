@@ -69,12 +69,15 @@ Thread* threadUSonicSensor = new Thread();
 Thread* threadUSonicServo = new Thread();
 Thread* threadDistanceIR = new Thread();
 
-// newping
+// Instantiates the NewPing class
 NewPing sonar(USONIC_TRIG, USONIC_ECHO, MAX_DISTANCE);
-// temp constant
+
+// global variables
 int pathDistance = 0;
 int cliffHeight = 0;
 boolean _boo_autonomous_mode = true;
+int incRadarAngle = 5;
+int userInput = 0;
 
 // this scan the path of hexapod
 void scanPath() {
@@ -88,10 +91,6 @@ void scanCliffHeight() {
 
 }
 
-
-// @todo: todo
-int incRadarAngle = 5;
-
 void doRadar() {
  //ULTRASONICSERVO
  int curAngle = sUltraSonic.read();
@@ -101,6 +100,18 @@ void doRadar() {
  
  if(curAngle >= 100)
     sUltraSonic.write(0);
+}
+
+void newDoRadar() {
+  int curAngle = sUltraSonic.read();
+  
+  // sets initial angle of the ultrasonic
+  sUltraSonic.write(NINETY_DEGREE);
+  
+  // distance from the obstacle from hexpd is than limit
+  // then, scan left and right
+  // opt for the furthest distance. then, strafe + forward
+  
 }
 
 void buildLegs() {
@@ -194,7 +205,7 @@ void buildLegs() {
     sLegFLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT)); 
 }
 
-int userInput = 0;
+
 void setup() {
   
     // establish serial communication
@@ -245,18 +256,17 @@ void loop() {
   }
   
   if(_boo_autonomous_mode) {
-    // sensors section
     // ultrasonic sensor
-    if(pathDistance >= 15 || cliffHeight >= DANGER_VAL_DISTANCE_IR){ // more than 15 inches
+    // PIR algo here
+    // IR_Distance algo here
+    if(pathDistance >= 15 || cliffHeight >= DANGER_VAL_DISTANCE_IR){ // more than 15 inches and clift height
       gaitHexapod.walk(FORWARD);
     } else if (pathDistance < 15) {
       gaitHexapod.strafe(LEFT);
+    } else if(pathDistance <= 10) {
+      gaitHexapod.walk(BACKWARD);
     }
-      // rotate 180 degrees with time interval
-      // PIR algo here
-      // IR_Distance algo here
-  
-  
+
   // gait section
   
     // if exists collision then strafe (left or right)

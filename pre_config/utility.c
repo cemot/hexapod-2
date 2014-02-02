@@ -17,8 +17,3 @@ int getAbsoluteAngle(int angle, int side) {
   }
 }
 
-double getDistanceIR(int val) {
-  double temp = 0.0;
-  temp = abs(((val - 630)) / 12) / 2.54 ;
-  return temp;
-}
