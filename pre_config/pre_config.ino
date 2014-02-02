@@ -56,6 +56,10 @@ Limb ikLimbD = Limb(sLegDHip, sLegDUpperLimb, sLegDLowerLimb);
 Limb ikLimbE = Limb(sLegEHip, sLegEUpperLimb, sLegELowerLimb);
 Limb ikLimbF = Limb(sLegFHip, sLegFUpperLimb, sLegFLowerLimb);
 
+// determines what kind of walking the
+// hexapod should perform. And assigns
+// all the limbs into the Gait class
+// for brevity & simplicity of the command
 Gait gaitHexapod = Gait(ikLimbA, ikLimbB, ikLimbC, ikLimbD, ikLimbE, ikLimbF);
 
 // ThreadController that will controll all threads
@@ -71,13 +75,11 @@ NewPing sonar(USONIC_TRIG, USONIC_ECHO, MAX_DISTANCE);
 // temp constant
 int pathDistance = 0;
 
+// this scan the path of hexapod
 void scanPath() {
-//    delay(50);
+
     int uS = sonar.ping();
     pathDistance = uS / US_ROUNDTRIP_IN;
-//    Serial.print("Ping: ");
-//    Serial.print(uS / US_ROUNDTRIP_CM);
-//    Serial.println("cm");
 }
 
 // @todo: todo
@@ -91,12 +93,7 @@ void doRadar() {
  sUltraSonic.write(curAngle);
  
  if(curAngle >= 100)
-    sUltraSonic.write(0); 
-//   sUltraSonic.write(curAngle - ULTRASONICSERVO);
-// else if (curAngle <= 10)
-//   sUltraSonic.write(curAngle + ULTRASONICSERVO);
- 
- 
+    sUltraSonic.write(0);
 }
 
 void buildLegs() {
@@ -231,42 +228,17 @@ void loop() {
     // if exists collision and collision distance is very close then stop or walk backwards
         // if gait sidewards is availbe then do sidewards        
   // ................................... codes to be finalized here soon. --by: kenn
-  
-//=======================================================
-// @kenn: algo ends here
-//=======================================================
 
-  // thread controller
+  // Thread controller. This runs all threads
   controll.run();
-  
-//=======================================================
-// @MISO: You can edit this section only. This section
-//            temporary due to testing phase.
-//=======================================================
+
   Limb::pace = .15; // adjust this to control the speed of gait. (0.025 - .5)
   
-  
-  // note: Please try run only 1, 2, 3... or 6 legs to by commenting out each line
-  // that correspond to each leg, for example this line: ikLimbA.walk(BACKWARD, LEFT);
-  if(pathDistance >= 15 ) {
+  // decides the hexapod what kind of gait it should perform
+  if(pathDistance >= 15 )
     gaitHexapod.walk(FORWARD);
-  // normal walk (tripod gait)
-//  ikLimbA.walk(BACKWARD, LEFT);
-//  ikLimbB.walk(FORWARD, LEFT);
-//  ikLimbC.walk(BACKWARD, LEFT);
-//  
-//  ikLimbD.walk(FORWARD, RIGHT);
-//  ikLimbE.walk(BACKWARD, RIGHT);
-//  ikLimbF.walk(FORWARD, RIGHT);
-
-  
-  }
-
-//=======================================================
-// @MISO: Please do not edit code beyond this section.
-//        if there are still code after this section
-//=======================================================
-
+  else if(pathDistance < 15)
+    gaitHexapod.walk(BACKWARD);
 
 }
 
