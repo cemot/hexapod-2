@@ -246,6 +246,7 @@ void loop() {
     gaitHexapod.walk(FORWARD);
   else if(pathDistance < 15)
     gaitHexapod.walk(BACKWARD);
-
+//  gaitHexapod.strafe(LEFT);
+//  gaitHexapod.strafe(RIGHT);
 }
 

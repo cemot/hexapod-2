@@ -103,8 +103,86 @@ void Limb::walkBackward(sides side, directions hxpDirections){
        raiseLegOffsetBackward = RAISELEGOFFSET_Y;
      else if(hxpDirections == BACKWARD)
         raiseLegOffsetBackward = 0;
-  }
+  }  
+}
+
+void Limb::strafe(directions directn, sides side, directions hexpdDirections, int offset) {
+   switch(directn) {
+     case FORWARD:
+         strafeForward(side, hexpdDirections, offset);
+         break;
+     case BACKWARD:
+         strafeBackward(side, hexpdDirections, offset);
+         break; 
+   }
+}
+
+void Limb::strafeForward(sides side, directions hxpDirections, int offset) {
+  // walks forward
+  ikLeg.move(cntr, length);
   
+  // offset leff/right... hip servo
+  
+  (side == RIGHT) ? mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip() - offset, RIGHT)) : mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip() - offset, LEFT));
+  (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetForward, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetForward, LEFT));
+  (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), LEFT));
+  
+
+  Serial.println(revDirectionFrontPrior);
+//  delay(500);
+  if(revDirectionFrontPrior == revFORWARD) {
+    cntr = cntr + pace;
+    if(cntr > projY)
+      revDirectionFrontPrior = revBACKWARD;
+      
+    // raise leg
+    if(hxpDirections == FORWARD)
+      raiseLegOffsetForward = RAISELEGOFFSET_Y;
+    else if (hxpDirections == BACKWARD)
+      raiseLegOffsetForward = 0;
+  } else {
+    cntr = cntr - pace;
+    if(cntr < 0) revDirectionFrontPrior = revFORWARD;
+    
+    // down leg
+    if(hxpDirections == FORWARD)
+      raiseLegOffsetForward = 0.0;
+    else if(hxpDirections == BACKWARD)
+      raiseLegOffsetForward = RAISELEGOFFSET_Y;
+  }
+}
+
+void Limb::strafeBackward(sides side, directions hxpDirections, int offset){
+  // walks backward
+  ikLeg.move(cntrB, length);
+
+  // strafe left/right hip servo
+  
+  (side == RIGHT) ? mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip() - offset, RIGHT)) : mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip() - offset, LEFT));
+  (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetBackward, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetBackward, LEFT));
+  (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), LEFT));
+
+  
+  if(revDirectionBackPrior == revBACKWARD) {
+    cntrB = cntrB - pace;
+    if(cntrB < projYB)
+      revDirectionBackPrior = revFORWARD; 
+  
+    if(hxpDirections == FORWARD)    
+      raiseLegOffsetBackward = 0;
+    else if(hxpDirections == BACKWARD)
+      raiseLegOffsetBackward = RAISELEGOFFSET_Y;
+      
+  } else {
+    cntrB = cntrB + pace;
+    if(cntrB > 0) 
+      revDirectionBackPrior = revBACKWARD;
+      
+     if(hxpDirections == FORWARD)
+       raiseLegOffsetBackward = RAISELEGOFFSET_Y;
+     else if(hxpDirections == BACKWARD)
+        raiseLegOffsetBackward = 0;
+  }  
 }
 
 void Limb::setPace(double newVal) {

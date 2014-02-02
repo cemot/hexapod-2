@@ -33,3 +33,28 @@ int Gait::walk(directions directn) {
    }
 }
 
+int Gait::strafe(sides side) {
+  
+  switch(side) {
+    case LEFT:
+        mLimbD->walk(FORWARD, RIGHT, FORWARD);
+        mLimbE->walk(BACKWARD, RIGHT, FORWARD);
+        mLimbF->walk(FORWARD, RIGHT, FORWARD);
+        
+        mLimbA->walk(BACKWARD, LEFT, BACKWARD);
+        mLimbB->walk(FORWARD, LEFT, BACKWARD);
+        mLimbC->walk(BACKWARD, LEFT, BACKWARD);
+
+       break;
+    case RIGHT:
+        mLimbD->walk(FORWARD, RIGHT, BACKWARD);
+        mLimbE->walk(BACKWARD, RIGHT, BACKWARD);
+        mLimbF->walk(FORWARD, RIGHT, BACKWARD);
+        
+        mLimbA->walk(BACKWARD, LEFT, FORWARD);
+        mLimbB->walk(FORWARD, LEFT, FORWARD);
+        mLimbC->walk(BACKWARD, LEFT, FORWARD);
+       break;
+  }
+}
+
