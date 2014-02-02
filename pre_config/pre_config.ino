@@ -78,6 +78,12 @@ int cliffHeight = 0;
 boolean _boo_autonomous_mode = true;
 int incRadarAngle = 5;
 int userInput = 0;
+boolean lookOtherPath = false;
+int leftOtherPath = 0; // variable for optional path
+int rightOtherPath = 0; // for left and right
+long simTimer = 0.0; // simulate timer
+sides hexpdStrafeDirection = LEFT;
+
 
 // this scan the path of hexapod
 void scanPath() {
@@ -109,8 +115,38 @@ void newDoRadar() {
   sUltraSonic.write(NINETY_DEGREE);
   
   // distance from the obstacle from hexpd is than limit
-  // then, scan left and right
-  // opt for the furthest distance. then, strafe + forward
+  if(pathDistance <= DISTANCE_LIMIT_IR && lookOtherPath == false) { 
+      lookOtherPath == true;
+  }
+  
+    if(lookOtherPath == true) {
+      // turn left
+      sUltraSonic.write(130);
+      // read the sensor distance
+      leftOtherPath = analogRead(IR_DIST);
+      leftOtherPath = map(leftOtherPath, 0, 1023, 1023, 0);
+      
+      // turn right
+      sUltraSonic.write(0);
+      // read the sensor
+      rightOtherPath = analogRead(IR_DIST);
+      rightOtherPath = map(rightOtherPath, 0, 1023, 1023, 0);
+      
+      // compares both optional paths
+      if(leftOtherPath >= rightOtherPath) {
+        // turns left for 3 seconds
+        hexpdStrafeDirection == LEFT;
+      } else {
+        // turns right for 3 seconds
+        hexpdStrafeDirection == RIGHT;
+      }
+      
+      // resets some variables
+      leftOtherPath = 0;
+      rightOtherPath = 0;
+      // turns on lookOtherPath
+//      lookOtherPath == false; reset this afther strafe
+    }
   
 }
 
@@ -261,14 +297,18 @@ void loop() {
     // IR_Distance algo here
     if(pathDistance >= 15 || cliffHeight >= DANGER_VAL_DISTANCE_IR){ // more than 15 inches and clift height
       gaitHexapod.walk(FORWARD);
-    } else if (pathDistance < 15) {
-      gaitHexapod.strafe(LEFT);
-    } else if(pathDistance <= 10) {
+    } else if (lookOtherPath == true) {
+      gaitHexapod.strafe(hexpdStrafeDirection); // strafe left or right
+      // simulate timer using timer
+      simTimer++;
+      if(simTimer > 48000) { // after 3 seconds
+        lookOtherPath = false;
+        simTimer = 0.0;
+      }
+    } else if(pathDistance <= 10 || cliffHeight <= DANGER_VAL_DISTANCE_IR) {
       gaitHexapod.walk(BACKWARD);
     }
 
-  // gait section
-  
     // if exists collision then strafe (left or right)
     // if exists collision and collision distance is very close then stop or walk backwards
         // if gait sidewards is availbe then do sidewards          

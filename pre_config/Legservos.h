@@ -46,6 +46,7 @@
 #define MAX_DISTANCE 200 // constant variable for the ultrasonic sensor || pinging purpsoses
 const int RATIO_DISTANCE_IR_CM = 12;
 const int DANGER_VAL_DISTANCE_IR = 570;
+const int DISTANCE_LIMIT_IR = 15;
 
 enum directions {
     FORWARD, BACKWARD, STRAFELEFT, STRAFERIGHT
