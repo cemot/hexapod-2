@@ -8,9 +8,9 @@ class Gait {
   public:
     Gait(Limb&, Limb&, Limb&, Limb&, Limb&, Limb&);
     
-    int walk(directions);
-    
+    int walk(directions);    
     int strafe(sides);
+    int halt();
   
   private:
   Limb* mLimbA;

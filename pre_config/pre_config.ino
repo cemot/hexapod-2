@@ -189,6 +189,7 @@ void buildLegs() {
     sLegFLowerLimb.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT)); 
 }
 
+int gaitType = 0;
 void setup() {
   
     // establish serial communication
@@ -237,16 +238,30 @@ void loop() {
   Limb::pace = .15; // adjust this to control the speed of gait. (0.025 - .5)
   
   if(Serial.available()) {
-   int outputText = Serial.read() - '0';
-    Serial.print("Bluetooth data: ");
-    Serial.println(outputText); 
+   gaitType = Serial.read() - '0';
+//    Serial.print("Bluetooth data: ");
+//    Serial.println(gaitType); 
+    
+    // decides the hexapod what kind of gait it should perform
+//    if(pathDistance >= 15 )
+     switch(gaitType) {
+      case 0:
+         gaitHexapod.walk(FORWARD);
+       break;       
+//    else if(pathDistance < 15)
+      case 1:
+        gaitHexapod.walk(BACKWARD);
+        break;
+      case 2:
+        gaitHexapod.strafe(LEFT);
+        break;
+      case 3:
+        gaitHexapod.strafe(RIGHT);
+        break;
+      case 4:
+        gaitHexapod.halt();
+     }
   }
-  // decides the hexapod what kind of gait it should perform
-  if(pathDistance >= 15 )
-    gaitHexapod.walk(FORWARD);
-  else if(pathDistance < 15)
-    gaitHexapod.walk(BACKWARD);
-//  gaitHexapod.strafe(LEFT);
-//  gaitHexapod.strafe(RIGHT);
+  
 }
 

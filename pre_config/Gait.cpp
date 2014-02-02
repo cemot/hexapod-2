@@ -31,6 +31,8 @@ int Gait::walk(directions directn) {
         mLimbF->walk(FORWARD, RIGHT, BACKWARD);
         break;
    }
+   
+   return 0;
 }
 
 int Gait::strafe(sides side) {
@@ -56,5 +58,18 @@ int Gait::strafe(sides side) {
         mLimbC->walk(BACKWARD, LEFT, FORWARD);
        break;
   }
+  
+  return 0;
+}
+
+int Gait::halt() {
+  mLimbA->halt(LEFT);
+  mLimbB->halt(LEFT);
+  mLimbC->halt(LEFT);
+  
+  mLimbD->halt(RIGHT);
+  mLimbE->halt(RIGHT);
+  mLimbF->halt(RIGHT);
+   return 0; 
 }
 
