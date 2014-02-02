@@ -236,6 +236,11 @@ void loop() {
 
   Limb::pace = .15; // adjust this to control the speed of gait. (0.025 - .5)
   
+  if(Serial.available()) {
+   int outputText = Serial.read() - '0';
+    Serial.print("Bluetooth data: ");
+    Serial.println(outputText); 
+  }
   // decides the hexapod what kind of gait it should perform
   if(pathDistance >= 15 )
     gaitHexapod.walk(FORWARD);

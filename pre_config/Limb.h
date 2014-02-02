@@ -15,18 +15,16 @@ class Limb {
     
     // lets the limb moves as it should be. also gets the angle for each joints
     // of the limb
-    void walk(directions, sides);
-    void walkBackward(directions, sides);
+    void walk(directions, sides, directions);
+//    void walkBackward(directions, sides, directions);
     
     void setPace(double);
     
     double getPace();
     
   private:
-    void walkForward(sides);
-    void walkBackward(sides);
-    void walkFoward_Backward(sides);
-    void walkBackward_Backward(sides);
+    void walkForward(sides, directions);
+    void walkBackward(sides, directions);
     
     // data members/variables
     double cntr;
