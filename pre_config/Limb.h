@@ -1,6 +1,6 @@
 #ifndef LIMB_H
   #define LIMB_H
-#endif
+
 #include <Arduino.h>
 #include <Servo.h>
 #include "Legservos.h"
@@ -43,4 +43,5 @@ class Limb {
     Inversekinematics ikLeg;
 };
 
+#endif
   

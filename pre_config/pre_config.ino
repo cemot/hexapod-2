@@ -6,6 +6,7 @@
 #include "utility.c"
 #include "Inversekinematics.h"
 #include "Limb.h"
+#include "Gait.h"
 
 Servo sLegAHip;
 Servo sLegAUpperLimb;
@@ -55,6 +56,8 @@ Limb ikLimbD = Limb(sLegDHip, sLegDUpperLimb, sLegDLowerLimb);
 Limb ikLimbE = Limb(sLegEHip, sLegEUpperLimb, sLegELowerLimb);
 Limb ikLimbF = Limb(sLegFHip, sLegFUpperLimb, sLegFLowerLimb);
 
+Gait gaitHexapod = Gait(ikLimbA, ikLimbB, ikLimbC, ikLimbD, ikLimbE, ikLimbF);
+
 // ThreadController that will controll all threads
 ThreadController controll = ThreadController();  
 
@@ -86,7 +89,6 @@ void doRadar() {
  curAngle = curAngle + 5;
  
  sUltraSonic.write(curAngle);
- 
  
  if(curAngle >= 100)
     sUltraSonic.write(0); 
@@ -241,20 +243,22 @@ void loop() {
 // @MISO: You can edit this section only. This section
 //            temporary due to testing phase.
 //=======================================================
-  Limb::pace = .20; // adjust this to control the speed of gait. (0.025 - .5)
+  Limb::pace = .15; // adjust this to control the speed of gait. (0.025 - .5)
   
   
   // note: Please try run only 1, 2, 3... or 6 legs to by commenting out each line
   // that correspond to each leg, for example this line: ikLimbA.walk(BACKWARD, LEFT);
   if(pathDistance >= 15 ) {
+    gaitHexapod.walk(FORWARD);
   // normal walk (tripod gait)
-  ikLimbA.walk(BACKWARD, LEFT);
-  ikLimbB.walk(FORWARD, LEFT);
-  ikLimbC.walk(BACKWARD, LEFT);
-  
-  ikLimbD.walk(FORWARD, RIGHT);
-  ikLimbE.walk(BACKWARD, RIGHT);
-  ikLimbF.walk(FORWARD, RIGHT);
+//  ikLimbA.walk(BACKWARD, LEFT);
+//  ikLimbB.walk(FORWARD, LEFT);
+//  ikLimbC.walk(BACKWARD, LEFT);
+//  
+//  ikLimbD.walk(FORWARD, RIGHT);
+//  ikLimbE.walk(BACKWARD, RIGHT);
+//  ikLimbF.walk(FORWARD, RIGHT);
+
   
   }
 
