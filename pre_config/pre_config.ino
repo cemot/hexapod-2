@@ -8,6 +8,7 @@
 #include "Limb.h"
 #include "Gait.h"
 
+
 Servo sLegAHip;
 Servo sLegAUpperLimb;
 Servo sLegALowerLimb;
@@ -74,6 +75,7 @@ Thread* threadUSonicServo = new Thread();
 NewPing sonar(USONIC_TRIG, USONIC_ECHO, MAX_DISTANCE);
 // temp constant
 int pathDistance = 0;
+
 
 // this scan the path of hexapod
 void scanPath() {

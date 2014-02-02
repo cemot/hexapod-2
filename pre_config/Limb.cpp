@@ -6,6 +6,8 @@ Limb::Limb(Servo& svHip, Servo& svUprLimb, Servo& svLwrLimb){
   cntrB = 0.0;
   projY = 5; // Note: this is the of the limb's angle (forward)
   projYB = -5; // Note: this is the of the limb's angle (backward)
+  projYBackward = -5; // for gait backward
+  projYBBackward = 5; // for gait backward
 
   // the distance of step each leg
   length = 11;
@@ -40,7 +42,75 @@ void Limb::walk(directions directn, sides side) {
   }
 }
 
+void Limb::walkBackward(directions directn, sides side) {
+  switch(directn) {
+     case FORWARD:
+         walkForward(side);
+         break;
+     case BACKWARD:
+         walkBackward(side);
+         break;
+     default:
+          FORWARD; 
+  }
+}
+
 void Limb::walkForward(sides side) {
+  // walks forward
+  ikLeg.move(cntr, length);
+  
+  (side == RIGHT) ? mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), RIGHT)) : mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), LEFT));
+  (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetForward, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetForward, LEFT));
+  (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), LEFT));
+  
+
+  Serial.println(revDirectionFrontPrior);
+//  delay(500);
+  if(revDirectionFrontPrior == revFORWARD) {
+    cntr = cntr + pace;
+    if(cntr > projY)
+      revDirectionFrontPrior = revBACKWARD;
+    // raise leg    
+//    raiseLegOffsetForward = RAISELEGOFFSET_Y;
+raiseLegOffsetForward = 0;
+  } else {
+    cntr = cntr - pace;
+    if(cntr < 0) revDirectionFrontPrior = revFORWARD;
+    
+    // down leg
+//    raiseLegOffsetForward = 0.0;
+raiseLegOffsetForward = RAISELEGOFFSET_Y;
+  }
+}
+
+void Limb::walkBackward(sides side){
+  // walks backward
+  ikLeg.move(cntrB, length);
+
+  (side == RIGHT) ? mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), RIGHT)) : mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), LEFT));
+  (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetBackward, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetBackward, LEFT));
+  (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), LEFT));
+
+  
+  if(revDirectionBackPrior == revBACKWARD) {
+    cntrB = cntrB - pace;
+    if(cntrB < projYB)
+      revDirectionBackPrior = revFORWARD;     
+//    raiseLegOffsetBackward = 0;
+raiseLegOffsetBackward = RAISELEGOFFSET_Y;
+  } else {
+    cntrB = cntrB + pace;
+    if(cntrB > 0) 
+      revDirectionBackPrior = revBACKWARD;
+//    raiseLegOffsetBackward = RAISELEGOFFSET_Y;
+raiseLegOffsetBackward = 0;
+  }
+  
+}
+
+
+// gait backward algo here
+void Limb::walkFoward_Backward(sides side) {
   // walks forward
   ikLeg.move(cntr, length);
   
@@ -65,7 +135,7 @@ void Limb::walkForward(sides side) {
   }
 }
 
-void Limb::walkBackward(sides side){
+void Limb::walkBackward_Backward(sides side){
   // walks backward
   ikLeg.move(cntrB, length);
 
@@ -87,6 +157,7 @@ void Limb::walkBackward(sides side){
   }
   
 }
+// end gait backward algo
 
 void Limb::setPace(double newVal) {
   pace = newVal; 
