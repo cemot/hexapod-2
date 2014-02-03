@@ -338,19 +338,6 @@ void loop() {
     } else {
       gaitHexapod.walk(BACKWARD);
     }
-    
-//    if (lookOtherPath == true) {
-//      gaitHexapod.strafe(hexpdStrafeDirection); // strafe left or right
-      // simulate timer using timer
-//      simTimer++;
-//      if(simTimer > 48000) { // after 3 seconds
-//        lookOtherPath = false;
-//        simTimer = 0.0;
-
-//      }
-//      if(pathDistance <= 10 || cliffHeight <= DANGER_VAL_DISTANCE_IR) {
-//      gaitHexapod.walk(BACKWARD);
-//      }
 
   } else {
     
