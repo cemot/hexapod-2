@@ -333,11 +333,36 @@ void loop() {
     // ultrasonic sensor
     // PIR algo here
     // IR_Distance algo here
-    if((pathDistance >= 15 || cliffHeight >= DANGER_VAL_DISTANCE_IR ) && lookOtherPath == false){ // more than 15 inches and clift height
-      gaitHexapod.walk(FORWARD);
-    } else {
-      gaitHexapod.walk(BACKWARD);
-    }
+//    if((pathDistance >= 15 || cliffHeight >= DANGER_VAL_DISTANCE_IR ) && lookOtherPath == false){ // more than 15 inches and clift height
+//      gaitHexapod.walk(FORWARD);
+//    } else {
+//      gaitHexapod.walk(BACKWARD);
+
+      // if pathDistance <= distance.abl and cliffHeight <= cliff.abl then walk
+      if(pathDistance <= DISTANCE_ALLOWABLE && cliffHeight <= DANGER_VAL_DISTANCE_IR) {
+        gaitHexapod.walk(FORWARD); 
+      }
+      // if pathDistance >= distance.abl OR cliffHeight >= cliff.abl then stop
+      if(pathDistance >= DISTANCE_ALLOWABLE || cliffHeight >= DANGER_VAL_DISTANCE_IR) {
+        //if cliff.cur >= cliff.abl 
+        if(cliffHeight >= DANGER_VAL_DISTANCE_IR) {
+          // then backward t(n).
+          for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.walk(BACKWARD); /* add delay function if necessary */}
+
+          //strafe (left/right) n/t <-- how to prolong, where distance.abl is in allowable  
+        }
+        
+        // if pathDistance >= distance.abl 
+        if(pathDistance >= DISTANCE_ALLOWABLE) {
+          // then stop
+          gaitHexapod.standby();
+          // scan left/righ, then compare
+            // compare.result <= distance.abl then
+                // halt/sit  <-- how to prolong
+            // else strafe (compare.result n/t)
+        }
+        
+      }
 
   } else {
     

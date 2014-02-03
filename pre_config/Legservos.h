@@ -48,7 +48,8 @@
 const int RATIO_DISTANCE_IR_CM = 12;
 const int DANGER_VAL_DISTANCE_IR = 570;
 const int DISTANCE_LIMIT_IR = 15;
-
+const int DISTANCE_ALLOWABLE = 15;
+const int TIME_DELAY_MS = 3000;
 enum directions {
     FORWARD, BACKWARD, STRAFELEFT, STRAFERIGHT
 };

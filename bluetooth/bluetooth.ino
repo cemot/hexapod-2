@@ -1,6 +1,6 @@
 #include <SoftwareSerial.h>
-#define RxD 9
-#define TxD 10
+#define RxD 15
+#define TxD 14
 #define DEBUG_ENABLED 1
 SoftwareSerial blueToothSerial(RxD,TxD);
 char incoming;
@@ -69,36 +69,28 @@ void loop()
 	switch (incoming)
 	{
 	case '1':
-		digitalWrite(4, HIGH);
-		blueToothSerial.println("pin 4 HIGH");
+		blueToothSerial.println("Move Forward");
 		break;
 	case '2':
-		digitalWrite(5, HIGH);
-		blueToothSerial.println("pin 5 HIGH");
+		blueToothSerial.println("Move Backward");
 		break;
 	case '3':
-		digitalWrite(6, HIGH);
-		blueToothSerial.println("pin 6 HIGH");
+		blueToothSerial.println("Strafe Left");
 		break;
 	case '4':
-		digitalWrite(7, HIGH);
-		blueToothSerial.println("pin 7 HIGH");
+		blueToothSerial.println("Strafe Right");
 		break;
 	case '5':
-		digitalWrite(4, LOW);
-		blueToothSerial.println("pin 4 LOW");
+		blueToothSerial.println("Tumbling sa one time?!");
 		break;
 	case '6':
-		digitalWrite(5, LOW);
-		blueToothSerial.println("pin 5 LOW");
+		blueToothSerial.println("Play Dead");
 		break;
 	case '7':
-		digitalWrite(6, LOW);
-		blueToothSerial.println("pin 6 LOW");
+		blueToothSerial.println("Roll");
 		break;
 	case '8':
-		digitalWrite(7, LOW);
-		blueToothSerial.println("pin 7 LOW");
+		blueToothSerial.println("Halt");
 		break;
 	}
 	delay(100);

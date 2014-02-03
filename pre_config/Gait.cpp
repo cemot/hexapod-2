@@ -75,3 +75,14 @@ int Gait::halt() {
    return 0; 
 }
 
+int Gait::standby() {
+  mLimbA->halt(LEFT);
+  mLimbB->halt(LEFT);
+  mLimbC->halt(LEFT);
+  
+  mLimbD->halt(RIGHT);
+  mLimbE->halt(RIGHT);
+  mLimbF->halt(RIGHT);
+   return 0; 
+}
+

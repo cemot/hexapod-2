@@ -11,6 +11,7 @@ class Gait {
     int walk(directions);    
     int strafe(sides);
     int halt();
+    int standby();
   
   private:
   Limb* mLimbA;
