@@ -43,6 +43,7 @@
 #define USONIC_ECHO 31
 #define IR_DIST A12
 #define ULTRASONICSERVO 11
+#define CAMERASERVO 12
 #define MAX_DISTANCE 200 // constant variable for the ultrasonic sensor || pinging purpsoses
 const int RATIO_DISTANCE_IR_CM = 12;
 const int DANGER_VAL_DISTANCE_IR = 570;

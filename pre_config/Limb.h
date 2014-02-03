@@ -16,8 +16,10 @@ class Limb {
     // lets the limb moves as it should be. also gets the angle for each joints
     // of the limb
     void walk(directions, sides, directions);
-    void halt(sides);
+    void halt(sides);    
+    void standby(sides);
     void setPace(double);
+    void adjustBLeg(boolean , int);
     
     double getPace();
     
@@ -36,6 +38,8 @@ class Limb {
     double length;
     double raiseLegOffsetForward;
     double raiseLegOffsetBackward;
+    boolean mAdjstBLeg;
+    int mBLegOffset;
     
     revolution revDirectionFrontPrior;
     revolution revDirectionBackPrior;

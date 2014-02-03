@@ -13,6 +13,8 @@ int Gait::walk(directions directn) {
    switch(directn)  {
       case FORWARD:
         mLimbA->walk(BACKWARD, LEFT, FORWARD);
+        // adjust the B leg || left
+        mLimbB->adjustBLeg(true, 20);
         mLimbB->walk(FORWARD, LEFT, FORWARD);
         mLimbC->walk(BACKWARD, LEFT, FORWARD);
         

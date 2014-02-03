@@ -28,6 +28,7 @@ Servo sLegFHip;
 Servo sLegFUpperLimb;
 Servo sLegFLowerLimb;
 Servo sUltraSonic;
+Servo sCamera;
 
 leg *pinLegA;
 leg *pinLegB; 
@@ -68,6 +69,10 @@ ThreadController controll = ThreadController();
 Thread* threadUSonicSensor = new Thread();
 Thread* threadUSonicServo = new Thread();
 Thread* threadDistanceIR = new Thread();
+Thread* threadLeftPIR = new Thread();
+Thread* threadMidPIR = new Thread();
+Thread* threadRightPIR = new Thread();
+Thread* threadCamera = new Thread();
 
 // Instantiates the NewPing class
 NewPing sonar(USONIC_TRIG, USONIC_ECHO, MAX_DISTANCE);
@@ -83,12 +88,64 @@ int leftOtherPath = 0; // variable for optional path
 int rightOtherPath = 0; // for left and right
 long simTimer = 0.0; // simulate timer
 sides hexpdStrafeDirection = LEFT;
+int pirLeftSensor = 0;
+int pirMidSensor = 0;
+int pirRightSensor = 0;
+
+void camOnWatch() {
+  int _pirLEFT = analogRead(PIR_LEFT);
+//  int _pirMID = analogRead(PIR_MID);
+  int _pirRIGHT = analogRead(PIR_RIGHT);
+  
+  int threshhold = 5; // due to PIR rough data
+  
+//  Serial.print("Left "); Serial.print(_pirLEFT);
+//  Serial.print("Right: "); Serial.println(_pirRIGHT);
+  
+  if(_pirLEFT > threshhold){
+    // turn left
+    sCamera.write(135); //delay(1000);
+  } else if(_pirRIGHT > threshhold) {
+     // turn mid 
+     sCamera.write(45); //delay(1000);
+  } else if(_pirLEFT > threshhold && _pirRIGHT > threshhold) {
+     sCamera.write(90);
+  }
+}
+
+// PIR LEFT
+void monitorPIRLeft() {
+  pirLeftSensor = analogRead(PIR_LEFT);
+  // @todo: delete all Serial.print()
+//  Serial.print("PIRLeft: ");
+//  Serial.println(pirLeftSensor);
+}
+
+// PIR MID
+void monitorPIRMid() {
+  pirMidSensor = analogRead(PIR_MID);
+  // @todo: delete all Serial.print()
+//  Serial.print("PIRMid: ");
+//  Serial.println(pirMidSensor);
+}
+
+// PIR RIGHT
+void monitorPIRRight() {
+  pirRightSensor = analogRead(PIR_RIGHT);
+  // @todo: delete all Serial.print()
+//  Serial.print("PIRRight: ");
+//  Serial.println(pirRightSensor);
+//  Serial.println("=====================");
+}
 
 
 // this scan the path of hexapod
 void scanPath() {
     int uS = sonar.ping();
     pathDistance = uS / US_ROUNDTRIP_IN;
+//    Serial.print("pathDistance ");
+//    Serial.println(pathDistance);
+    
 }
 
 void scanCliffHeight() {
@@ -106,48 +163,6 @@ void doRadar() {
  
  if(curAngle >= 100)
     sUltraSonic.write(0);
-}
-
-void newDoRadar() {
-  int curAngle = sUltraSonic.read();
-  
-  // sets initial angle of the ultrasonic
-  sUltraSonic.write(NINETY_DEGREE);
-  
-  // distance from the obstacle from hexpd is than limit
-  if(pathDistance <= DISTANCE_LIMIT_IR && lookOtherPath == false) { 
-      lookOtherPath == true;
-  }
-  
-    if(lookOtherPath == true) {
-      // turn left
-      sUltraSonic.write(130);
-      // read the sensor distance
-      leftOtherPath = analogRead(IR_DIST);
-      leftOtherPath = map(leftOtherPath, 0, 1023, 1023, 0);
-      
-      // turn right
-      sUltraSonic.write(0);
-      // read the sensor
-      rightOtherPath = analogRead(IR_DIST);
-      rightOtherPath = map(rightOtherPath, 0, 1023, 1023, 0);
-      
-      // compares both optional paths
-      if(leftOtherPath >= rightOtherPath) {
-        // turns left for 3 seconds
-        hexpdStrafeDirection == LEFT;
-      } else {
-        // turns right for 3 seconds
-        hexpdStrafeDirection == RIGHT;
-      }
-      
-      // resets some variables
-      leftOtherPath = 0;
-      rightOtherPath = 0;
-      // turns on lookOtherPath
-//      lookOtherPath == false; reset this afther strafe
-    }
-  
 }
 
 void buildLegs() {
@@ -247,22 +262,42 @@ void setup() {
     // establish serial communication
     Serial.begin(9600);
     
+    // camera servo
+    sCamera.attach(CAMERASERVO);
+    sCamera.write(90);
+    threadCamera->onRun(camOnWatch);
+    threadCamera->setInterval(500);
+    
     // Ultrasonic sensor
     threadUSonicSensor->onRun(scanPath);
     threadUSonicSensor->setInterval(500);
     // servo Ultrasonic
     threadUSonicServo->onRun(doRadar);
+    //threadUSonicServo->onRun(newDoRadar);
     threadUSonicServo->setInterval(50);
+      
     // distance IR
     threadDistanceIR->onRun(scanCliffHeight);
     threadDistanceIR->setInterval(500);
+    // PIR
+    threadLeftPIR->onRun(monitorPIRLeft);
+    threadLeftPIR->setInterval(500);
+    threadMidPIR->onRun(monitorPIRMid);
+    threadMidPIR->setInterval(500);
+    threadRightPIR->onRun(monitorPIRRight);
+    threadRightPIR->setInterval(500);
     
     controll.add(threadUSonicSensor);
     controll.add(threadUSonicServo);
     controll.add(threadDistanceIR);
+    controll.add(threadLeftPIR);
+//    controll.add(threadMidPIR);
+    controll.add(threadRightPIR);
+    controll.add(threadCamera);
     
     // @todo: temp. do oop on this
     sUltraSonic.attach(ULTRASONICSERVO);
+    sUltraSonic.write(NINETY_DEGREE);
     
     // assigns three servos each leg
     // and sets initial stance of the
@@ -276,6 +311,9 @@ void loop() {
   controll.run();
 
   Limb::pace = .15; // adjust this to control the speed of gait. (0.025 - .5)
+  
+  // @todo: temp
+//  newDoRadar();
   
   // wait for serial communication
   if(Serial.available()) {
@@ -295,24 +333,27 @@ void loop() {
     // ultrasonic sensor
     // PIR algo here
     // IR_Distance algo here
-    if(pathDistance >= 15 || cliffHeight >= DANGER_VAL_DISTANCE_IR){ // more than 15 inches and clift height
+    if((pathDistance >= 15 || cliffHeight >= DANGER_VAL_DISTANCE_IR ) && lookOtherPath == false){ // more than 15 inches and clift height
       gaitHexapod.walk(FORWARD);
-    } else if (lookOtherPath == true) {
-      gaitHexapod.strafe(hexpdStrafeDirection); // strafe left or right
-      // simulate timer using timer
-      simTimer++;
-      if(simTimer > 48000) { // after 3 seconds
-        lookOtherPath = false;
-        simTimer = 0.0;
-      }
-    } else if(pathDistance <= 10 || cliffHeight <= DANGER_VAL_DISTANCE_IR) {
+    } else {
       gaitHexapod.walk(BACKWARD);
     }
+    
+//    if (lookOtherPath == true) {
+//      gaitHexapod.strafe(hexpdStrafeDirection); // strafe left or right
+      // simulate timer using timer
+//      simTimer++;
+//      if(simTimer > 48000) { // after 3 seconds
+//        lookOtherPath = false;
+//        simTimer = 0.0;
 
-    // if exists collision then strafe (left or right)
-    // if exists collision and collision distance is very close then stop or walk backwards
-        // if gait sidewards is availbe then do sidewards          
+//      }
+//      if(pathDistance <= 10 || cliffHeight <= DANGER_VAL_DISTANCE_IR) {
+//      gaitHexapod.walk(BACKWARD);
+//      }
+
   } else {
+    
     switch(userInput) {
       case 2:
          gaitHexapod.walk(FORWARD);
@@ -330,6 +371,7 @@ void loop() {
         gaitHexapod.halt();
      }
   }
-   
-}
+  }  
+
+
 
