@@ -84,8 +84,6 @@ boolean _boo_autonomous_mode = true;
 int incRadarAngle = 5;
 int userInput = 0;
 boolean lookOtherPath = false;
-int leftOtherPath = 0; // variable for optional path
-int rightOtherPath = 0; // for left and right
 long simTimer = 0.0; // simulate timer
 sides hexpdStrafeDirection = LEFT;
 int pirLeftSensor = 0;
@@ -163,6 +161,47 @@ void doRadar() {
  
  if(curAngle >= 100)
     sUltraSonic.write(0);
+}
+
+// searches for other path from left to right
+sides searchOptionPath(boolean magAngle, int& compareResult) { // magAngle: true -> (0 - 180 degrees turn); false -> (45 - 135 degrees turn)
+  int leftPathOption = 0; // variable for optional path
+  int rightPathOption = 0; // for left and right
+  int uS = sonar.ping();
+
+  if(magAngle == true){
+    // get left distance, assign to variable
+    sUltraSonic.write(ONEEIGHTY_DEGREE);
+    leftPathOption = uS / US_ROUNDTRIP_IN;
+    
+    // get right distance, assign to variable
+    sUltraSonic.write(0);
+    rightPathOption = uS / US_ROUNDTRIP_IN;
+    
+    // sets back to ulrasonic sensor to the center
+    sUltraSonic.write(NINETY_DEGREE);
+    
+    return (leftPathOption > rightPathOption) ? LEFT : RIGHT;
+    
+  } else {
+    // get left distance, assign to variable
+    sUltraSonic.write(ONEHUNDREDTHIRTYFIVE_DEGREE); 
+    leftPathOption = uS / US_ROUNDTRIP_IN;  
+    
+    // get right distance, assign to variable
+    sUltraSonic.write(FORTYFIVE_DEGREE);   
+    rightPathOption = uS / US_ROUNDTRIP_IN;
+    
+    // sets back to ulrasonic sensor to the center
+    sUltraSonic.write(NINETY_DEGREE);
+    
+    // compare and get result number
+    compareResult = (leftPathOption >= rightPathOption) ? leftPathOption : rightPathOption;
+    
+    return (leftPathOption > rightPathOption) ? LEFT : RIGHT;    
+  }
+  
+  return LEFT; // default returned value. fail safe purposes
 }
 
 void buildLegs() {
@@ -271,10 +310,11 @@ void setup() {
     // Ultrasonic sensor
     threadUSonicSensor->onRun(scanPath);
     threadUSonicSensor->setInterval(500);
+
     // servo Ultrasonic
-    threadUSonicServo->onRun(doRadar);
+//    threadUSonicServo->onRun(doRadar);
     //threadUSonicServo->onRun(newDoRadar);
-    threadUSonicServo->setInterval(50);
+//    threadUSonicServo->setInterval(50);
       
     // distance IR
     threadDistanceIR->onRun(scanCliffHeight);
@@ -288,14 +328,14 @@ void setup() {
     threadRightPIR->setInterval(500);
     
     controll.add(threadUSonicSensor);
-    controll.add(threadUSonicServo);
+//    controll.add(threadUSonicServo);
     controll.add(threadDistanceIR);
     controll.add(threadLeftPIR);
 //    controll.add(threadMidPIR);
     controll.add(threadRightPIR);
     controll.add(threadCamera);
     
-    // @todo: temp. do oop on this
+    // sets the ultrasonic sensor to center
     sUltraSonic.attach(ULTRASONICSERVO);
     sUltraSonic.write(NINETY_DEGREE);
     
@@ -348,18 +388,35 @@ void loop() {
         if(cliffHeight >= DANGER_VAL_DISTANCE_IR) {
           // then backward t(n).
           for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.walk(BACKWARD); /* add delay function if necessary */}
-
-          //strafe (left/right) n/t <-- how to prolong, where distance.abl is in allowable  
+          
+          // int further side
+          int  furtherSide = 0;
+          
+          sides strafeDirection = LEFT; // sets default
+          //strafe (left/right)
+          strafeDirection = searchOptionPath(true, furtherSide);
+          for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /* add delay function if necessary */}                 
         }
         
         // if pathDistance >= distance.abl 
         if(pathDistance >= DISTANCE_ALLOWABLE) {
-          // then stop
-          gaitHexapod.standby();
+          // then stop          
+          for(int i = 0; i <= TIME_DELAY_MS; i++) {gaitHexapod.standby(); /* add delay function if necessary */}
+          
+          // int further side
+          int furtherSide = 0;
+          
           // scan left/righ, then compare
+          sides strafeDirection = LEFT; // sets default
+          //strafe (left/right)
+          strafeDirection = searchOptionPath(false, furtherSide);
             // compare.result <= distance.abl then
+            if(furtherSide <= DISTANCE_ALLOWABLE) {
                 // halt/sit  <-- how to prolong
-            // else strafe (compare.result n/t)
+                for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.standby(); /* add delay function if necessary */}
+            } else { // strafe (compare.result n/t)
+                for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /* add delay function if necessary */} 
+            }
         }
         
       }

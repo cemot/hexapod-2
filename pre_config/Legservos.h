@@ -5,6 +5,7 @@
 #define NINETY_DEGREE 90
 #define FORTYFIVE_DEGREE 45
 #define ONETHREEFIVE_DEGREE 100
+#define ONEHUNDREDTHIRTYFIVE_DEGREE 135
 #define ONEEIGHTY_DEGREE 180
 
 // defines the height of the leg should be raised upon
