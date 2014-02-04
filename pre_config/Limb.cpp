@@ -85,7 +85,11 @@ void Limb::walkBackward(sides side, directions hxpDirections){
   // walks backward
   ikLeg.move(cntrB, length);
 
-  (side == RIGHT) ? mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), RIGHT)) : mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), LEFT));
+  if(mAdjstBLeg)
+    (side == RIGHT) ? mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), RIGHT)) : mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), LEFT));
+  else
+    (side == RIGHT) ? mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip(), RIGHT)) : mSvHip.write(getAbsoluteAngle((int)ikLeg.getHip() - mBLegOffset, LEFT));
+    
   (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetBackward, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle((int)ikLeg.getUpperLimb() - raiseLegOffsetBackward, LEFT));
   (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle((int)ikLeg.getLowerLimb(), LEFT));
 
@@ -116,8 +120,8 @@ void Limb::halt(sides side) {
    ikLeg.move(projY, 14);
   
   (side == RIGHT) ? mSvHip.write(getAbsoluteAngle(NINETY_DEGREE, RIGHT)) : mSvHip.write(getAbsoluteAngle(NINETY_DEGREE, LEFT));
-  (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle(FORTYFIVE_DEGREE, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle(FORTYFIVE_DEGREE, LEFT));
-  (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle(FORTYFIVE_DEGREE, RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle(FORTYFIVE_DEGREE, LEFT)); 
+  (side == RIGHT) ? mSvUprLimb.write(getAbsoluteAngle(SIXTY_FIVE_DEGREE, RIGHT)) : mSvUprLimb.write(getAbsoluteAngle(SIXTY_FIVE_DEGREE, LEFT));
+  (side == RIGHT) ? mSvLwrLimb.write(getAbsoluteAngle(SIXTY_FIVE_DEGREE, RIGHT)) : mSvLwrLimb.write(getAbsoluteAngle(SIXTY_FIVE_DEGREE, LEFT)); 
 }
 
 void Limb::standby(sides side) {

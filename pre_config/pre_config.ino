@@ -143,12 +143,15 @@ void scanPath() {
     pathDistance = uS / US_ROUNDTRIP_IN;
 //    Serial.print("pathDistance ");
 //    Serial.println(pathDistance);
-    
+//    
 }
 
 void scanCliffHeight() {
   cliffHeight = analogRead(IR_DIST);
-  cliffHeight = map(cliffHeight, 0, 1023, 1023, 0);  
+  cliffHeight = map(cliffHeight, 0, 1023, 1023, 0); 
+ 
+//   Serial.print("cliffHeight ");
+//   Serial.println(cliffHeight); 
 
 }
 
@@ -167,37 +170,44 @@ void doRadar() {
 sides searchOptionPath(boolean magAngle, int& compareResult) { // magAngle: true -> (0 - 180 degrees turn); false -> (45 - 135 degrees turn)
   int leftPathOption = 0; // variable for optional path
   int rightPathOption = 0; // for left and right
-  int uS = sonar.ping();
-
+  int uSLeft = 0;
+  int uSRight = 0;
+  
+//  Serial.println(" Scanning Path");
   if(magAngle == true){
     // get left distance, assign to variable
     sUltraSonic.write(ONEEIGHTY_DEGREE); delay(1000);
-    leftPathOption = uS / US_ROUNDTRIP_IN;
-     
+    uSLeft = sonar.ping();
+    leftPathOption = uSLeft / US_ROUNDTRIP_IN;
+    
     // get right distance, assign to variable
-    sUltraSonic.write(0); delay(1000);
-    rightPathOption = uS / US_ROUNDTRIP_IN;
+    sUltraSonic.write(0);  delay(1000);
+    uSRight = sonar.ping();
+    rightPathOption = uSRight / US_ROUNDTRIP_IN;
     
     // sets back to ulrasonic sensor to the center
-    sUltraSonic.write(NINETY_DEGREE);
-    
-    return (leftPathOption >= rightPathOption) ? LEFT : RIGHT;
+    sUltraSonic.write(NINETY_DEGREE); delay(500);
+
+//    Serial.print("Left: "); Serial.println(leftPathOption); Serial.print("Right: "); Serial.println(rightPathOption); delay(30000);
+    return (leftPathOption > rightPathOption) ? LEFT : RIGHT;
     
   } else {
     // get left distance, assign to variable
     sUltraSonic.write(ONEHUNDREDTHIRTYFIVE_DEGREE); delay(1000);
-    leftPathOption = uS / US_ROUNDTRIP_IN;  
+    uSLeft = sonar.ping();
+    leftPathOption = uSLeft / US_ROUNDTRIP_IN;  
     
     // get right distance, assign to variable
-    sUltraSonic.write(FORTYFIVE_DEGREE); delay(1000);
-    rightPathOption = uS / US_ROUNDTRIP_IN;
+    sUltraSonic.write(FORTYFIVE_DEGREE);    delay(1000);
+    uSRight = sonar.ping();
+    rightPathOption = uSRight / US_ROUNDTRIP_IN;
     
     // sets back to ulrasonic sensor to the center
-    sUltraSonic.write(NINETY_DEGREE);
+    sUltraSonic.write(NINETY_DEGREE);  delay(500);
     
     // compare and get result number
     compareResult = (leftPathOption >= rightPathOption) ? leftPathOption : rightPathOption;
-    
+//    Serial.print("Left: "); Serial.println(leftPathOption); Serial.print("Right: "); Serial.println(rightPathOption); delay(30000);
     return (leftPathOption > rightPathOption) ? LEFT : RIGHT;    
   }
   
@@ -308,8 +318,8 @@ void setup() {
     threadCamera->setInterval(500);
     
     // Ultrasonic sensor
-    threadUSonicSensor->onRun(scanPath);
-    threadUSonicSensor->setInterval(500);
+//    threadUSonicSensor->onRun(scanPath);
+//    threadUSonicSensor->setInterval(500);
 
     // servo Ultrasonic
 //    threadUSonicServo->onRun(doRadar);
@@ -317,19 +327,19 @@ void setup() {
 //    threadUSonicServo->setInterval(50);
       
     // distance IR
-    threadDistanceIR->onRun(scanCliffHeight);
-    threadDistanceIR->setInterval(500);
+//    threadDistanceIR->onRun(scanCliffHeight);
+//    threadDistanceIR->setInterval(500);
     // PIR
     threadLeftPIR->onRun(monitorPIRLeft);
-    threadLeftPIR->setInterval(500);
+    threadLeftPIR->setInterval(200);
     threadMidPIR->onRun(monitorPIRMid);
     threadMidPIR->setInterval(500);
     threadRightPIR->onRun(monitorPIRRight);
-    threadRightPIR->setInterval(500);
+    threadRightPIR->setInterval(200);
     
-    controll.add(threadUSonicSensor);
+//    controll.add(threadUSonicSensor);
 //    controll.add(threadUSonicServo);
-    controll.add(threadDistanceIR);
+//    controll.add(threadDistanceIR);
     controll.add(threadLeftPIR);
 //    controll.add(threadMidPIR);
     controll.add(threadRightPIR);
@@ -369,6 +379,12 @@ void loop() {
     }
   }
   
+  // read ultra sonic values
+  scanPath();
+  scanCliffHeight();
+//  delay(1000);
+//  Serial.println(" This is an infinite loop");
+
   if(_boo_autonomous_mode) {
     // ultrasonic sensor
     // PIR algo here
@@ -377,17 +393,19 @@ void loop() {
 //      gaitHexapod.walk(FORWARD);
 //    } else {
 //      gaitHexapod.walk(BACKWARD);
-
+//      Serial.println(" Autonomous mode ni bei ");
+//      delay(10000);
       // if pathDistance <= distance.abl and cliffHeight <= cliff.abl then walk
-      if(pathDistance <= DISTANCE_ALLOWABLE && cliffHeight <= DANGER_VAL_DISTANCE_IR) {
+      if(pathDistance >= DISTANCE_ALLOWABLE && cliffHeight < DANGER_VAL_DISTANCE_IR) { // @todo: double check this later
+//        Serial.println(" FORWARD bro.");
         gaitHexapod.walk(FORWARD); 
       }
       // if pathDistance >= distance.abl OR cliffHeight >= cliff.abl then stop
-      if(pathDistance >= DISTANCE_ALLOWABLE || cliffHeight >= DANGER_VAL_DISTANCE_IR) {
+      if(pathDistance <= DISTANCE_ALLOWABLE || cliffHeight >= DANGER_VAL_DISTANCE_IR) {
         //if cliff.cur >= cliff.abl 
         if(cliffHeight >= DANGER_VAL_DISTANCE_IR) {
           // then backward t(n).
-          for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.walk(BACKWARD); /* add delay function if necessary */}
+          for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.walk(BACKWARD); /*Serial.println(" Atras bro.")*/;} // find a way to omit the latter part of the line from here... forward is one is to N
           
           // int further side
           int  furtherSide = 0;
@@ -395,15 +413,14 @@ void loop() {
           sides strafeDirection = LEFT; // sets default
           //strafe (left/right)
           strafeDirection = searchOptionPath(true, furtherSide);
-          for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /* add delay function if necessary */}
-          
-          // NOTE: i might need to put a GOTO cmd section here to explicitly exit the two nested level of if-control-stucture
+//          testScan();
+          for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /*Serial.print(" LIKO."); Serial.println(strafeDirection);*/}                 
         }
         
         // if pathDistance >= distance.abl 
-        if(pathDistance >= DISTANCE_ALLOWABLE) {
+        if(pathDistance <= DISTANCE_ALLOWABLE) {
           // then stop          
-          for(int i = 0; i <= TIME_DELAY_MS; i++) {gaitHexapod.standby(); /* add delay function if necessary */}
+//          for(int i = 0; i <= TIME_DELAY_MS; i++) {gaitHexapod.standby(); /*Serial.println("standby2x pag may time");*/}
           
           // int further side
           int furtherSide = 0;
@@ -414,12 +431,12 @@ void loop() {
           strafeDirection = searchOptionPath(false, furtherSide);
             // compare.result <= distance.abl then
             if(furtherSide <= DISTANCE_ALLOWABLE) {
-                // halt/sit  <-- how to prolong
-                for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.standby(); /* add delay function if necessary */}
+                // sit  <-- how to prolong
+                for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.standby();  /*Serial.println("gikan sa tulog");*/}
+               
             } else { // strafe (compare.result n/t)
-                  for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /* add delay function if necessary */} 
-            }           
-          // NOTE: i might need to put a GOTO cmd section here to explicitly exit the two nested level of if-control-stucture        
+                for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection);/* Serial.println("Strafe");*/} 
+            }
         }
         
       }
@@ -441,9 +458,12 @@ void loop() {
         break;
       case 6:
         gaitHexapod.halt();
+      case 7:
+        gaitHexapod.standby();
      }
   }
-}  
+
+  }  
 
 
 

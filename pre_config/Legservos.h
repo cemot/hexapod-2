@@ -4,6 +4,7 @@
 
 #define NINETY_DEGREE 90
 #define FORTYFIVE_DEGREE 45
+#define SIXTY_FIVE_DEGREE 65
 #define ONETHREEFIVE_DEGREE 100
 #define ONEHUNDREDTHIRTYFIVE_DEGREE 135
 #define ONEEIGHTY_DEGREE 180
@@ -47,10 +48,10 @@
 #define CAMERASERVO 12
 #define MAX_DISTANCE 200 // constant variable for the ultrasonic sensor || pinging purpsoses
 const int RATIO_DISTANCE_IR_CM = 12;
-const int DANGER_VAL_DISTANCE_IR = 570;
+const int DANGER_VAL_DISTANCE_IR = 400;
 const int DISTANCE_LIMIT_IR = 15;
 const int DISTANCE_ALLOWABLE = 15;
-const int TIME_DELAY_MS = 3000;
+const int TIME_DELAY_MS = 500;
 enum directions {
     FORWARD, BACKWARD, STRAFELEFT, STRAFERIGHT
 };

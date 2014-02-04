@@ -13,7 +13,7 @@ int Gait::walk(directions directn) {
    switch(directn)  {
       case FORWARD:
         mLimbA->walk(BACKWARD, LEFT, FORWARD);
-        // adjust the B leg || left
+        // adjusts the B leg || left
         mLimbB->adjustBLeg(true, 20);
         mLimbB->walk(FORWARD, LEFT, FORWARD);
         mLimbC->walk(BACKWARD, LEFT, FORWARD);
@@ -25,6 +25,8 @@ int Gait::walk(directions directn) {
         
       case BACKWARD:
         mLimbA->walk(BACKWARD, LEFT, BACKWARD);
+        // adjusts the B leg || left
+        mLimbB->adjustBLeg(true, 20);
         mLimbB->walk(FORWARD, LEFT, BACKWARD);
         mLimbC->walk(BACKWARD, LEFT, BACKWARD);
         
@@ -46,6 +48,8 @@ int Gait::strafe(sides side) {
         mLimbF->walk(FORWARD, RIGHT, FORWARD);
         
         mLimbA->walk(BACKWARD, LEFT, BACKWARD);
+        // adjusts the B leg || left
+        mLimbB->adjustBLeg(true, 20);
         mLimbB->walk(FORWARD, LEFT, BACKWARD);
         mLimbC->walk(BACKWARD, LEFT, BACKWARD);
 
@@ -56,6 +60,8 @@ int Gait::strafe(sides side) {
         mLimbF->walk(FORWARD, RIGHT, BACKWARD);
         
         mLimbA->walk(BACKWARD, LEFT, FORWARD);
+        // adjusts the B leg || left
+        mLimbB->adjustBLeg(true, 20);
         mLimbB->walk(FORWARD, LEFT, FORWARD);
         mLimbC->walk(BACKWARD, LEFT, FORWARD);
        break;
@@ -76,13 +82,13 @@ int Gait::halt() {
 }
 
 int Gait::standby() {
-  mLimbA->halt(LEFT);
-  mLimbB->halt(LEFT);
-  mLimbC->halt(LEFT);
+  mLimbA->standby(LEFT);
+  mLimbB->standby(LEFT);
+  mLimbC->standby(LEFT);
   
-  mLimbD->halt(RIGHT);
-  mLimbE->halt(RIGHT);
-  mLimbF->halt(RIGHT);
+  mLimbD->standby(RIGHT);
+  mLimbE->standby(RIGHT);
+  mLimbF->standby(RIGHT);
    return 0; 
 }
 
