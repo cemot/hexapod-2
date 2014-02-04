@@ -171,25 +171,25 @@ sides searchOptionPath(boolean magAngle, int& compareResult) { // magAngle: true
 
   if(magAngle == true){
     // get left distance, assign to variable
-    sUltraSonic.write(ONEEIGHTY_DEGREE);
+    sUltraSonic.write(ONEEIGHTY_DEGREE); delay(1000);
     leftPathOption = uS / US_ROUNDTRIP_IN;
-    
+     
     // get right distance, assign to variable
-    sUltraSonic.write(0);
+    sUltraSonic.write(0); delay(1000);
     rightPathOption = uS / US_ROUNDTRIP_IN;
     
     // sets back to ulrasonic sensor to the center
     sUltraSonic.write(NINETY_DEGREE);
     
-    return (leftPathOption > rightPathOption) ? LEFT : RIGHT;
+    return (leftPathOption >= rightPathOption) ? LEFT : RIGHT;
     
   } else {
     // get left distance, assign to variable
-    sUltraSonic.write(ONEHUNDREDTHIRTYFIVE_DEGREE); 
+    sUltraSonic.write(ONEHUNDREDTHIRTYFIVE_DEGREE); delay(1000);
     leftPathOption = uS / US_ROUNDTRIP_IN;  
     
     // get right distance, assign to variable
-    sUltraSonic.write(FORTYFIVE_DEGREE);   
+    sUltraSonic.write(FORTYFIVE_DEGREE); delay(1000);
     rightPathOption = uS / US_ROUNDTRIP_IN;
     
     // sets back to ulrasonic sensor to the center
@@ -395,7 +395,9 @@ void loop() {
           sides strafeDirection = LEFT; // sets default
           //strafe (left/right)
           strafeDirection = searchOptionPath(true, furtherSide);
-          for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /* add delay function if necessary */}                 
+          for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /* add delay function if necessary */}
+          
+          // NOTE: i might need to put a GOTO cmd section here to explicitly exit the two nested level of if-control-stucture
         }
         
         // if pathDistance >= distance.abl 
@@ -415,8 +417,9 @@ void loop() {
                 // halt/sit  <-- how to prolong
                 for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.standby(); /* add delay function if necessary */}
             } else { // strafe (compare.result n/t)
-                for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /* add delay function if necessary */} 
-            }
+                  for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /* add delay function if necessary */} 
+            }           
+          // NOTE: i might need to put a GOTO cmd section here to explicitly exit the two nested level of if-control-stucture        
         }
         
       }
@@ -440,7 +443,7 @@ void loop() {
         gaitHexapod.halt();
      }
   }
-  }  
+}  
 
 
 
