@@ -187,7 +187,10 @@ sides searchOptionPath(boolean magAngle, int& compareResult) { // magAngle: true
     
     // sets back to ulrasonic sensor to the center
     sUltraSonic.write(NINETY_DEGREE); delay(500);
-
+    
+    // sets pathDistance to its new value
+    pathDistance = (leftPathOption > rightPathOption) ? leftPathOption : rightPathOption;
+    
 //    Serial.print("Left: "); Serial.println(leftPathOption); Serial.print("Right: "); Serial.println(rightPathOption); delay(30000);
     return (leftPathOption > rightPathOption) ? LEFT : RIGHT;
     
@@ -207,6 +210,10 @@ sides searchOptionPath(boolean magAngle, int& compareResult) { // magAngle: true
     
     // compare and get result number
     compareResult = (leftPathOption >= rightPathOption) ? leftPathOption : rightPathOption;
+    
+    // sets pathDistance to its new value
+    pathDistance = (leftPathOption > rightPathOption) ? leftPathOption : rightPathOption;
+    
 //    Serial.print("Left: "); Serial.println(leftPathOption); Serial.print("Right: "); Serial.println(rightPathOption); delay(30000);
     return (leftPathOption > rightPathOption) ? LEFT : RIGHT;    
   }
@@ -379,49 +386,47 @@ void loop() {
     }
   }
   
-  // read ultra sonic values
-  scanPath();
-  scanCliffHeight();
-//  delay(1000);
-//  Serial.println(" This is an infinite loop");
+  // read ultra sonic values and
+  // executes this block every second
+  if((millis() % TIME_DELAY_ONE_SECOND) == 0) {
+    scanPath(); 
+    scanCliffHeight();
+  }
 
   if(_boo_autonomous_mode) {
-    // ultrasonic sensor
-    // PIR algo here
-    // IR_Distance algo here
-//    if((pathDistance >= 15 || cliffHeight >= DANGER_VAL_DISTANCE_IR ) && lookOtherPath == false){ // more than 15 inches and clift height
-//      gaitHexapod.walk(FORWARD);
-//    } else {
-//      gaitHexapod.walk(BACKWARD);
-//      Serial.println(" Autonomous mode ni bei ");
-//      delay(10000);
-      // if pathDistance <= distance.abl and cliffHeight <= cliff.abl then walk
-      if(pathDistance >= DISTANCE_ALLOWABLE && cliffHeight < DANGER_VAL_DISTANCE_IR) { // @todo: double check this later
+      // if there is enough distance of path to walk onto and there is no deep excavation or cliff on front -- WALK
+      if(pathDistance >= DISTANCE_ALLOWABLE && cliffHeight < DANGER_VAL_DISTANCE_IR) {
 //        Serial.println(" FORWARD bro.");
         gaitHexapod.walk(FORWARD); 
       }
-      // if pathDistance >= distance.abl OR cliffHeight >= cliff.abl then stop
+      
+      // if either there is no enough distance of path to walk onto or
+      // there is an deep excavation/cliff nearby on front -- BACKWARD and TURN AROUND or STRAFE (LEFT/RIGHT)
       if(pathDistance <= DISTANCE_ALLOWABLE || cliffHeight >= DANGER_VAL_DISTANCE_IR) {
-        //if cliff.cur >= cliff.abl 
+        // there is cliff nearby
         if(cliffHeight >= DANGER_VAL_DISTANCE_IR) {
-          // then backward t(n).
-          for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.walk(BACKWARD); /*Serial.println(" Atras bro.")*/;} // find a way to omit the latter part of the line from here... forward is one is to N
+          // then backward t(n). execute gaitHexapod.walk(BACKWARD) n times without executing the SCANNING block
+          gaitHexapod.walk(BACKWARD); /*Serial.println(" Atras bro.");*/
           
-          // int further side
-          int  furtherSide = 0;
-          
-          sides strafeDirection = LEFT; // sets default
-          //strafe (left/right)
-          strafeDirection = searchOptionPath(true, furtherSide);
-//          testScan();
-          for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /*Serial.print(" LIKO."); Serial.println(strafeDirection);*/}                 
+          if((millis() % TIME_DELAY_THREE_SECONDS) == 0) { // run every 3 sec
+            //****  SCANNING section
+            // int further side
+            int  furtherSide = 0;
+            
+            sides strafeDirection = LEFT; // sets default
+            //strafe (left/right)
+            strafeDirection = searchOptionPath(true, furtherSide);
+            for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /*Serial.print(" LIKO."); Serial.println(strafeDirection);*/}
+            //**** end of section SCANNING
+            // skips the rest of the code
+            return;
+          }
         }
         
-        // if pathDistance >= distance.abl 
+        // There is no enough distance of path 
         if(pathDistance <= DISTANCE_ALLOWABLE) {
           // then stop          
-//          for(int i = 0; i <= TIME_DELAY_MS; i++) {gaitHexapod.standby(); /*Serial.println("standby2x pag may time");*/}
-          
+//          gaitHexapod.standby(); /*Serial.println("standby2x pag may time");*/}          
           // int further side
           int furtherSide = 0;
           
