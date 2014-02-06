@@ -353,7 +353,7 @@ void setup() {
     controll.add(threadLeftPIR);
 //    controll.add(threadMidPIR);
     controll.add(threadRightPIR);
-    controll.add(threadCamera);
+//    controll.add(threadCamera);
     
     // sets the ultrasonic sensor to center
     sUltraSonic.attach(ULTRASONICSERVO);
@@ -391,27 +391,28 @@ void loop() {
   
   // read ultra sonic values and
   // executes this block every second
-  if((millis() % TIME_DELAY_ONE_SECOND) == 0) {
+//  if((millis() % TIME_DELAY_ONE_SECOND) == 0) {
     scanPath(); 
     scanCliffHeight();
-  }
+    Serial.println("Scanning ==>>");
+//  }
 
   if(_boo_autonomous_mode) {
       // if there is enough distance of path to walk onto and there is no deep excavation or cliff on front -- WALK
       if(pathDistance >= DISTANCE_ALLOWABLE && cliffHeight < DANGER_VAL_DISTANCE_IR) {
-//        Serial.println(" FORWARD bro.");
+        Serial.println(" FORWARD bro.");
         gaitHexapod.walk(FORWARD); 
       }
       
       // if either there is no enough distance of path to walk onto or
       // there is an deep excavation/cliff nearby on front -- BACKWARD and TURN AROUND or STRAFE (LEFT/RIGHT)
-      if(pathDistance <= DISTANCE_ALLOWABLE || cliffHeight >= DANGER_VAL_DISTANCE_IR) {
+      if(pathDistance <= DISTANCE_ALLOWABLE || cliffHeight >= DANGER_VAL_DISTANCE_IR) {  
         // there is cliff nearby
         if(cliffHeight >= DANGER_VAL_DISTANCE_IR) {
           // then backward t(n). execute gaitHexapod.walk(BACKWARD) n times without executing the SCANNING block
-          gaitHexapod.walk(BACKWARD); /*Serial.println(" Atras bro.");*/
+          gaitHexapod.walk(BACKWARD); Serial.println(" Atras bro.");
           
-          if((millis() % TIME_DELAY_THREE_SECONDS) == 0) { // run every 3 sec
+          if((millis() % TIME_DELAY_THREE_SECONDS) == 0) { // run every 3 sec ?????
             //****  SCANNING section
             // int further side
             int  furtherSide = 0;
@@ -421,7 +422,7 @@ void loop() {
             strafeDirection = searchOptionPath(true, furtherSide);
             // sets the pathDistance its new value;
             pathDistance = furtherSide;
-            for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /*Serial.print(" LIKO."); Serial.println(strafeDirection);*/}
+            for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); Serial.print(" LIKO."); /*Serial.println(strafeDirection);*/}
             //**** end of section SCANNING
             // skips the rest of the code
             return;
@@ -434,7 +435,7 @@ void loop() {
         // There is no enough distance of path 
         if(pathDistance <= DISTANCE_ALLOWABLE) {
           // then stop          
-//          gaitHexapod.standby(); /*Serial.println("standby2x pag may time");*/}          
+   
           // int further side
           int furtherSide = 0;
           
@@ -448,38 +449,35 @@ void loop() {
             // compare.result <= distance.abl then
             if(furtherSide <= DISTANCE_ALLOWABLE) {
                 // sit  <-- how to prolong
-                for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.standby();  /*Serial.println("gikan sa tulog");*/}
+                for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.standby();  Serial.println("gikan sa tulog");}
                
             } else { // strafe (compare.result n/t)
-                for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection);/* Serial.println("Strafe");*/} 
+                for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); Serial.println("Strafe");}
             }
-        }
-        
-      }
-
+        }        
+      }     
   } else {
-    
-    switch(userInput) {
-      case 2:
-         gaitHexapod.walk(FORWARD);
-         break;       
-      case 3:
-        gaitHexapod.walk(BACKWARD);
-        break;
-      case 4:
-        gaitHexapod.strafe(LEFT);
-        break;
-      case 5:
-        gaitHexapod.strafe(RIGHT);
-        break;
-      case 6:
-        gaitHexapod.halt();
-      case 7:
-        gaitHexapod.standby();
-     }
-  }
-
-  }  
+      switch(userInput) {
+        case 2:
+           gaitHexapod.walk(FORWARD);
+           break;       
+        case 3:
+          gaitHexapod.walk(BACKWARD);
+          break;
+        case 4:
+          gaitHexapod.strafe(LEFT);
+          break;
+        case 5:
+          gaitHexapod.strafe(RIGHT);
+          break;
+        case 6:
+          gaitHexapod.halt();
+        case 7:
+          gaitHexapod.standby();
+       }
+  } // autonomous mode
+} // loop
+  
 
 
 
