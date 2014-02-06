@@ -141,8 +141,8 @@ void monitorPIRRight() {
 void scanPath() {
     int uS = sonar.ping();
     pathDistance = uS / US_ROUNDTRIP_IN;
-//    Serial.print("pathDistance ");
-//    Serial.println(pathDistance);
+    Serial.print("pathDistance ");
+    Serial.println(pathDistance);
 //    
 }
 
@@ -150,8 +150,8 @@ void scanCliffHeight() {
   cliffHeight = analogRead(IR_DIST);
   cliffHeight = map(cliffHeight, 0, 1023, 1023, 0); 
  
-//   Serial.print("cliffHeight ");
-//   Serial.println(cliffHeight); 
+   Serial.print("cliffHeight ");
+   Serial.println(cliffHeight); 
 
 }
 
@@ -393,7 +393,7 @@ void loop() {
   // executes this block every second
 //  if((millis() % TIME_DELAY_ONE_SECOND) == 0) {
     scanPath(); 
-    scanCliffHeight();
+    scanCliffHeight(); delay(10);
 //    Serial.println("Scanning ==>>");
 //  }
 

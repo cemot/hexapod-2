@@ -18,9 +18,9 @@ int Gait::walk(directions directn) {
         mLimbB->walk(FORWARD, LEFT, FORWARD);
         mLimbC->walk(BACKWARD, LEFT, FORWARD);
         
-        mLimbD->walk(FORWARD, RIGHT, FORWARD);
-        mLimbE->walk(BACKWARD, RIGHT, FORWARD);
-        mLimbF->walk(FORWARD, RIGHT, FORWARD);
+        mLimbD->walk(BACKWARD, RIGHT, FORWARD);
+        mLimbE->walk(FORWARD, RIGHT, FORWARD);
+        mLimbF->walk(BACKWARD, RIGHT, FORWARD);
         break;
         
       case BACKWARD:
@@ -47,11 +47,11 @@ int Gait::strafe(sides side) {
         mLimbE->walk(BACKWARD, RIGHT, FORWARD);
         mLimbF->walk(FORWARD, RIGHT, FORWARD);
         
-        mLimbA->walk(BACKWARD, LEFT, BACKWARD);
+        mLimbA->walk(FORWARD, LEFT, BACKWARD);
         // adjusts the B leg || left
         mLimbB->adjustBLeg(true, 20);
-        mLimbB->walk(FORWARD, LEFT, BACKWARD);
-        mLimbC->walk(BACKWARD, LEFT, BACKWARD);
+        mLimbB->walk(BACKWARD, LEFT, BACKWARD);
+        mLimbC->walk(FORWARD, LEFT, BACKWARD);
 
        break;
     case RIGHT:
@@ -59,11 +59,11 @@ int Gait::strafe(sides side) {
         mLimbE->walk(BACKWARD, RIGHT, BACKWARD);
         mLimbF->walk(FORWARD, RIGHT, BACKWARD);
         
-        mLimbA->walk(BACKWARD, LEFT, FORWARD);
+        mLimbA->walk(FORWARD, LEFT, FORWARD);
         // adjusts the B leg || left
         mLimbB->adjustBLeg(true, 20);
-        mLimbB->walk(FORWARD, LEFT, FORWARD);
-        mLimbC->walk(BACKWARD, LEFT, FORWARD);
+        mLimbB->walk(BACKWARD, LEFT, FORWARD);
+        mLimbC->walk(FORWARD, LEFT, FORWARD);
        break;
   }
   
