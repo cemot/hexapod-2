@@ -394,13 +394,13 @@ void loop() {
 //  if((millis() % TIME_DELAY_ONE_SECOND) == 0) {
     scanPath(); 
     scanCliffHeight();
-    Serial.println("Scanning ==>>");
+//    Serial.println("Scanning ==>>");
 //  }
 
   if(_boo_autonomous_mode) {
       // if there is enough distance of path to walk onto and there is no deep excavation or cliff on front -- WALK
       if(pathDistance >= DISTANCE_ALLOWABLE && cliffHeight < DANGER_VAL_DISTANCE_IR) {
-        Serial.println(" FORWARD bro.");
+//        Serial.println(" FORWARD bro.");
         gaitHexapod.walk(FORWARD); 
       }
       
@@ -410,7 +410,7 @@ void loop() {
         // there is cliff nearby
         if(cliffHeight >= DANGER_VAL_DISTANCE_IR) {
           // then backward t(n). execute gaitHexapod.walk(BACKWARD) n times without executing the SCANNING block
-          gaitHexapod.walk(BACKWARD); Serial.println(" Atras bro.");
+          gaitHexapod.walk(BACKWARD); /*Serial.println(" Atras bro.");*/
           
           if((millis() % TIME_DELAY_THREE_SECONDS) == 0) { // run every 3 sec ?????
             //****  SCANNING section
@@ -422,7 +422,7 @@ void loop() {
             strafeDirection = searchOptionPath(true, furtherSide);
             // sets the pathDistance its new value;
             pathDistance = furtherSide;
-            for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); Serial.print(" LIKO."); /*Serial.println(strafeDirection);*/}
+            for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /*Serial.print(" LIKO.");*/ /*Serial.println(strafeDirection);*/}
             //**** end of section SCANNING
             // skips the rest of the code
             return;
@@ -449,10 +449,10 @@ void loop() {
             // compare.result <= distance.abl then
             if(furtherSide <= DISTANCE_ALLOWABLE) {
                 // sit  <-- how to prolong
-                for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.standby();  Serial.println("gikan sa tulog");}
+                for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.standby();  /*Serial.println("gikan sa tulog");*/}
                
             } else { // strafe (compare.result n/t)
-                for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); Serial.println("Strafe");}
+                for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /*Serial.println("Strafe");*/}
             }
         }        
       }     
