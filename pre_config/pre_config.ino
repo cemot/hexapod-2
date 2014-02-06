@@ -188,8 +188,11 @@ sides searchOptionPath(boolean magAngle, int& compareResult) { // magAngle: true
     // sets back to ulrasonic sensor to the center
     sUltraSonic.write(NINETY_DEGREE); delay(500);
     
+    // compare and get result number
+    compareResult = (leftPathOption >= rightPathOption) ? leftPathOption : rightPathOption;
+    
     // sets pathDistance to its new value
-    pathDistance = (leftPathOption > rightPathOption) ? leftPathOption : rightPathOption;
+//    pathDistance = (leftPathOption > rightPathOption) ? leftPathOption : rightPathOption;
     
 //    Serial.print("Left: "); Serial.println(leftPathOption); Serial.print("Right: "); Serial.println(rightPathOption); delay(30000);
     return (leftPathOption > rightPathOption) ? LEFT : RIGHT;
@@ -212,7 +215,7 @@ sides searchOptionPath(boolean magAngle, int& compareResult) { // magAngle: true
     compareResult = (leftPathOption >= rightPathOption) ? leftPathOption : rightPathOption;
     
     // sets pathDistance to its new value
-    pathDistance = (leftPathOption > rightPathOption) ? leftPathOption : rightPathOption;
+//    pathDistance = (leftPathOption > rightPathOption) ? leftPathOption : rightPathOption;
     
 //    Serial.print("Left: "); Serial.println(leftPathOption); Serial.print("Right: "); Serial.println(rightPathOption); delay(30000);
     return (leftPathOption > rightPathOption) ? LEFT : RIGHT;    
@@ -416,11 +419,16 @@ void loop() {
             sides strafeDirection = LEFT; // sets default
             //strafe (left/right)
             strafeDirection = searchOptionPath(true, furtherSide);
+            // sets the pathDistance its new value;
+            pathDistance = furtherSide;
             for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /*Serial.print(" LIKO."); Serial.println(strafeDirection);*/}
             //**** end of section SCANNING
             // skips the rest of the code
             return;
           }
+          
+          // prioritizes the backward move
+          return;
         }
         
         // There is no enough distance of path 
@@ -434,6 +442,9 @@ void loop() {
           sides strafeDirection = LEFT; // sets default
           //strafe (left/right)
           strafeDirection = searchOptionPath(false, furtherSide);
+          // sets the pathDistance its new value;
+          pathDistance = furtherSide;
+          
             // compare.result <= distance.abl then
             if(furtherSide <= DISTANCE_ALLOWABLE) {
                 // sit  <-- how to prolong
