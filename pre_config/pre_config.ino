@@ -176,12 +176,12 @@ sides searchOptionPath(boolean magAngle, int& compareResult) { // magAngle: true
 //  Serial.println(" Scanning Path");
   if(magAngle == true){
     // get left distance, assign to variable
-    sUltraSonic.write(ONEEIGHTY_DEGREE); delay(1000);
+    sUltraSonic.write(ONEHUNDREDTHIRTYFIVE_DEGREE); delay(1000);
     uSLeft = sonar.ping();
     leftPathOption = uSLeft / US_ROUNDTRIP_IN;
     
     // get right distance, assign to variable
-    sUltraSonic.write(0);  delay(1000);
+    sUltraSonic.write(FORTYFIVE_DEGREE);  delay(1000);
     uSRight = sonar.ping();
     rightPathOption = uSRight / US_ROUNDTRIP_IN;
     
@@ -422,7 +422,7 @@ void loop() {
             strafeDirection = searchOptionPath(true, furtherSide);
             // sets the pathDistance its new value;
             pathDistance = furtherSide;
-            for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /*Serial.print(" LIKO.");*/ /*Serial.println(strafeDirection);*/}
+            for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); delay(10); /*Serial.print(" LIKO.");*/ /*Serial.println(strafeDirection);*/}
             //**** end of section SCANNING
             // skips the rest of the code
             return;
@@ -452,7 +452,7 @@ void loop() {
                 for(int i = 0; i <= TIME_DELAY_MS; i++){gaitHexapod.standby();  /*Serial.println("gikan sa tulog");*/}
                
             } else { // strafe (compare.result n/t)
-                for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /*Serial.println("Strafe");*/}
+                for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); delay(10); /*Serial.println("Strafe")*/;}
             }
         }        
       }     
