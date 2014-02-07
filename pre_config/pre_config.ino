@@ -141,8 +141,8 @@ void monitorPIRRight() {
 void scanPath() {
     int uS = sonar.ping();
     pathDistance = uS / US_ROUNDTRIP_IN;
-    Serial.print("pathDistance ");
-    Serial.println(pathDistance);
+//    Serial.print("pathDistance ");
+//    Serial.println(pathDistance);
 //    
 }
 
@@ -150,8 +150,8 @@ void scanCliffHeight() {
   cliffHeight = analogRead(IR_DIST);
   cliffHeight = map(cliffHeight, 0, 1023, 1023, 0); 
  
-   Serial.print("cliffHeight ");
-   Serial.println(cliffHeight); 
+//   Serial.print("cliffHeight ");
+//   Serial.println(cliffHeight); 
 
 }
 
@@ -188,11 +188,8 @@ sides searchOptionPath(boolean magAngle, int& compareResult) { // magAngle: true
     // sets back to ulrasonic sensor to the center
     sUltraSonic.write(NINETY_DEGREE); delay(500);
     
-    // compare and get result number
-    compareResult = (leftPathOption >= rightPathOption) ? leftPathOption : rightPathOption;
-    
     // sets pathDistance to its new value
-//    pathDistance = (leftPathOption > rightPathOption) ? leftPathOption : rightPathOption;
+    pathDistance = (leftPathOption > rightPathOption) ? leftPathOption : rightPathOption;
     
 //    Serial.print("Left: "); Serial.println(leftPathOption); Serial.print("Right: "); Serial.println(rightPathOption); delay(30000);
     return (leftPathOption > rightPathOption) ? LEFT : RIGHT;
@@ -215,7 +212,7 @@ sides searchOptionPath(boolean magAngle, int& compareResult) { // magAngle: true
     compareResult = (leftPathOption >= rightPathOption) ? leftPathOption : rightPathOption;
     
     // sets pathDistance to its new value
-//    pathDistance = (leftPathOption > rightPathOption) ? leftPathOption : rightPathOption;
+    pathDistance = (leftPathOption > rightPathOption) ? leftPathOption : rightPathOption;
     
 //    Serial.print("Left: "); Serial.println(leftPathOption); Serial.print("Right: "); Serial.println(rightPathOption); delay(30000);
     return (leftPathOption > rightPathOption) ? LEFT : RIGHT;    
@@ -420,16 +417,13 @@ void loop() {
             sides strafeDirection = LEFT; // sets default
             //strafe (left/right)
             strafeDirection = searchOptionPath(true, furtherSide);
-            // sets the pathDistance its new value;
-            pathDistance = furtherSide;
-            for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); delay(10); /*Serial.print(" LIKO.");*/ /*Serial.println(strafeDirection);*/}
+
+            for(int j = 0; j <= TIME_DELAY_MS; j++){gaitHexapod.strafe(strafeDirection); /*Serial.print(" LIKO."); Serial.println(strafeDirection);*/}
+
             //**** end of section SCANNING
             // skips the rest of the code
             return;
           }
-          
-          // prioritizes the backward move
-          return;
         }
         
         // There is no enough distance of path 
@@ -443,9 +437,6 @@ void loop() {
           sides strafeDirection = LEFT; // sets default
           //strafe (left/right)
           strafeDirection = searchOptionPath(false, furtherSide);
-          // sets the pathDistance its new value;
-          pathDistance = furtherSide;
-          
             // compare.result <= distance.abl then
             if(furtherSide <= DISTANCE_ALLOWABLE) {
                 // sit  <-- how to prolong
